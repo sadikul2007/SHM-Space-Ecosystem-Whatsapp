@@ -4,12 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BANGANUR (বঙ্গনূর) | Bengali Digital News Portal & Live TV</title>
-  <meta name="description" content="বঙ্গনূর (BANGANUR) - পশ্চিমবঙ্গ, ভারত ও বিশ্বের সর্বশেষ সংবাদ, লাইভ টিভি, সাহিত্য, ইতিহাস ও ঐতিহ্যের নির্ভরযোগ্য ডিজিটাল সংবাদ মাধ্যম।" />
+  <meta name="description" content="বঙ্গনূর (BANGANUR) - পশ্চিমবঙ্গ, ভারত ও বিশ্বের সর্বশেষ সংবাদ, লাইভ টিভি, ই-পেপার, সাহিত্য, ইতিহাস ও ঐতিহ্যের নির্ভরযোগ্য ডিজিটাল সংবাদ মাধ্যম।" />
+  <meta property="og:title" content="BANGANUR (বঙ্গনূর) - Bengali Digital News Portal" />
+  <meta property="og:description" content="বাংলার কণ্ঠস্বর, বিশ্বজুড়ে সংবাদ — লাইভ টিভি, ই-পেপার ও ডিজিটাল লাইব্রেরি।" />
+  <meta property="og:type" content="website" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -20,7 +31,9 @@
             emeraldMid: '#047857',
             emeraldLight: '#ECFDF5',
             navyDark: '#0F172A',
+            navySlate: '#1E293B',
             goldAccent: '#D97706',
+            goldBright: '#F59E0B',
             liveRed: '#DC2626',
             paperBg: '#F8FAFC'
           },
@@ -32,6 +45,7 @@
       }
     }
   </script>
+
   <style>
     body {
       font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
@@ -39,6 +53,11 @@
       color: #0F172A;
       overflow-x: hidden;
     }
+
+    .font-inter {
+      font-family: 'Inter', sans-serif;
+    }
+
     @keyframes tickerScroll {
       0% { transform: translateX(0%); }
       100% { transform: translateX(-50%); }
@@ -46,11 +65,12 @@
     .ticker-track {
       display: flex;
       width: max-content;
-      animation: tickerScroll 40s linear infinite;
+      animation: tickerScroll 42s linear infinite;
     }
     .ticker-track:hover {
       animation-play-state: paused;
     }
+
     @keyframes livePulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.35; transform: scale(1.25); }
@@ -58,422 +78,1588 @@
     .live-dot {
       animation: livePulse 1.3s infinite ease-in-out;
     }
+
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #064E3B;
+      border-radius: 9999px;
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      #printable-article, #printable-article * { visibility: visible; }
+      #printable-article {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white;
+        padding: 20px;
+      }
+      .no-print { display: none !important; }
+    }
   </style>
+
+  <script id="structured-data" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "name": "BANGANUR (বঙ্গনূর)",
+    "alternateName": "বঙ্গনূর ডিজিটাল নিউজ পোর্টাল",
+    "url": "https://banganur.in",
+    "sameAs": [
+      "https://facebook.com/banganur",
+      "https://youtube.com/@banganur"
+    ]
+  }
+  </script>
 </head>
 <body class="antialiased selection:bg-emeraldDeep selection:text-white">
+
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
   <div id="public-portal" class="min-h-screen flex flex-col">
-    <!-- Top Bar -->
-    <div class="bg-navyDark text-slate-200 text-xs sm:text-sm border-b border-slate-800">
+
+    <!-- 1. TOP UTILITY BAR -->
+    <div class="bg-navyDark text-slate-200 text-xs sm:text-sm border-b border-slate-800 no-print">
       <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex flex-wrap items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3 sm:gap-4">
           <span class="flex items-center gap-1.5 text-amber-400 font-medium">
             <i class="fa-regular fa-calendar-days"></i>
-            <span id="bengali-date-display">অগ্রহায়ণ ১৪৩৩ বঙ্গাব্দ</span>
+            <span id="bengali-date-display">২৬ কার্তিক ১৪৩৩ বঙ্গাব্দ</span>
           </span>
           <span class="hidden md:inline text-slate-500">|</span>
-          <span id="english-date-display" class="hidden md:inline font-inter text-slate-300"></span>
+          <span id="english-date-display" class="hidden md:inline font-inter text-slate-300">Thursday, November 12, 2026</span>
+          <span class="hidden lg:inline text-slate-500">|</span>
+          <span class="hidden lg:flex items-center gap-1.5 text-emerald-300">
+            <i class="fa-solid fa-sun text-amber-400"></i>
+            <span id="weather-display">কলকাতা ২৮°C • পরিষ্কার আকাশ</span>
+          </span>
         </div>
-        <div class="flex items-center gap-3">
-          <a href="https://facebook.com" target="_blank" rel="noopener" class="hover:text-amber-400 transition"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="https://youtube.com" target="_blank" rel="noopener" class="hover:text-red-400 transition"><i class="fa-brands fa-youtube"></i></a>
-          <a href="https://wa.me/919647109481" target="_blank" rel="noopener" class="hover:text-emerald-400 transition"><i class="fa-brands fa-whatsapp"></i></a>
+
+        <div class="flex items-center gap-2 sm:gap-3 ml-auto sm:ml-0">
+          <div class="hidden sm:flex items-center gap-2.5 pr-2 border-r border-slate-700">
+            <a id="top-fb-link" href="#" target="_blank" rel="noopener" aria-label="Facebook" class="hover:text-amber-400 transition"><i class="fa-brands fa-facebook-f"></i></a>
+            <a id="top-yt-link" href="#" target="_blank" rel="noopener" aria-label="YouTube" class="hover:text-red-400 transition"><i class="fa-brands fa-youtube"></i></a>
+            <a id="top-wa-link" href="#" target="_blank" rel="noopener" aria-label="WhatsApp" class="hover:text-emerald-400 transition"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+
+          <button onclick="handleCustomLinkOrView('epaper')" class="bg-emeraldMid hover:bg-emerald-600 text-white px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
+            <i class="fa-regular fa-newspaper"></i>
+            <span class="font-inter">E-PAPER</span>
+          </button>
+
+          <a href="https://banganur-api.sadikul2007.workers.dev/admin" target="_blank" rel="noopener noreferrer"
+            class="bg-amber-600 hover:bg-amber-500 text-white px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span class="font-inter">ADMIN</span>
+          </a>
         </div>
       </div>
     </div>
 
-    <!-- Masthead -->
-    <header class="bg-white border-b border-slate-200">
-      <div class="max-w-7xl mx-auto px-3 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <button onclick="navigateTo('home')" class="flex items-center gap-3 text-left group focus:outline-none">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emeraldDeep via-emeraldMid to-navyDark flex items-center justify-center shadow-md border-2 border-amber-500/70 text-white font-extrabold text-2xl">
-            ব
-          </div>
-          <div>
-            <div class="flex items-baseline gap-2">
-              <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-emeraldDeep leading-none">বঙ্গনূর</h1>
-              <span class="font-inter text-lg sm:text-xl font-extrabold tracking-wider text-navyDark">BANGANUR</span>
+    <!-- 2. NEWSPAPER MASTHEAD & TOP 728x90 AD -->
+    <header class="bg-white border-b border-slate-200 no-print">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-5 flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div class="flex items-center justify-between w-full lg:w-auto">
+          <button onclick="navigateTo('home')" class="flex items-center gap-3 text-left group focus:outline-none">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-emeraldDeep via-emeraldMid to-navyDark flex items-center justify-center shadow-md border-2 border-amber-500/70 shrink-0 group-hover:scale-105 transition">
+              <svg class="w-8 h-8 text-amber-400" viewBox="0 0 64 64" fill="none">
+                <circle cx="32" cy="32" r="26" stroke="currentColor" stroke-width="2.5" stroke-dasharray="4 3"/>
+                <path d="M20 44V20H33C38.5 20 42 23 42 27.5C42 30.8 39.8 33.2 36.8 34C40.5 34.8 43 37.5 43 41C43 45.5 39 48 33 48H20V44Z" fill="white"/>
+                <circle cx="46" cy="18" r="5" fill="#DC2626"/>
+              </svg>
             </div>
-            <p class="font-inter text-[10px] sm:text-xs font-bold tracking-[0.2em] text-amber-700 uppercase mt-1">
-              BENGALI DIGITAL NEWS PORTAL
-            </p>
-          </div>
-        </button>
+            <div>
+              <div class="flex items-baseline gap-2">
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-emeraldDeep leading-none">বঙ্গনূর</h1>
+                <span class="font-inter text-lg sm:text-xl font-extrabold tracking-wider text-navyDark">BANGANUR</span>
+              </div>
+              <p class="font-inter text-[10px] sm:text-xs font-bold tracking-[0.2em] text-amber-700 uppercase mt-1">
+                BENGALI DIGITAL NEWS PORTAL
+              </p>
+            </div>
+          </button>
 
-        <!-- Category Dropdown Filter -->
-        <div class="w-full sm:w-auto flex items-center gap-2">
-          <label for="category-dropdown" class="text-xs font-bold text-slate-600 shrink-0">বিভাগ বাছুন:</label>
-          <select id="category-dropdown" onchange="onCategoryDropdownChange(this.value)"
-            class="w-full sm:w-52 px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-navyDark text-sm font-bold focus:border-emeraldMid focus:outline-none">
-            <option value="সব">সব সংবাদ (All)</option>
-          </select>
+          <div class="flex items-center gap-2 lg:hidden">
+            <button onclick="toggleSearchModal()" aria-label="Search" class="p-2.5 rounded-lg bg-slate-100 text-navyDark hover:bg-emeraldLight hover:text-emeraldDeep transition">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button onclick="toggleMobileMenu()" aria-label="Menu" class="p-2.5 rounded-lg bg-emeraldDeep text-white hover:bg-emeraldMid transition">
+              <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="ad-slot-header" class="w-full lg:w-[728px] max-w-full"></div>
+
+        <div class="hidden lg:flex items-center gap-2">
+          <button onclick="toggleSearchModal()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-emeraldLight text-slate-700 hover:text-emeraldDeep border border-slate-200 font-medium text-sm transition">
+            <i class="fa-solid fa-magnifying-glass text-emeraldMid"></i>
+            <span>সংবাদ খুঁজুন...</span>
+          </button>
         </div>
       </div>
     </header>
 
-    <!-- Sticky Navigation -->
-    <nav class="sticky top-0 z-40 bg-emeraldDeep text-white shadow-md border-b-2 border-amber-500">
-      <div class="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2 overflow-x-auto">
-        <ul id="main-nav-list" class="flex items-center space-x-1 py-1 text-sm sm:text-base font-semibold whitespace-nowrap"></ul>
-        <button onclick="scrollToLiveTV()" class="shrink-0 my-1.5 bg-liveRed hover:bg-red-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-inter font-bold tracking-wide flex items-center gap-2 shadow transition">
-          <span class="w-2 h-2 rounded-full bg-white live-dot"></span>
-          LIVE TV
-        </button>
+    <!-- 3. STICKY MAIN NAVIGATION BAR -->
+    <nav class="sticky top-0 z-40 bg-emeraldDeep text-white shadow-md border-b-2 border-amber-500 no-print">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6">
+        <div class="hidden lg:flex items-center justify-between">
+          <ul id="main-nav-list" class="flex items-center space-x-1 py-1 text-base font-semibold"></ul>
+          <button onclick="scrollToLiveTV()" class="my-1.5 bg-liveRed hover:bg-red-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-inter font-bold tracking-wide flex items-center gap-2 shadow transition">
+            <span class="w-2 h-2 rounded-full bg-white live-dot"></span>
+            LIVE TV
+          </button>
+        </div>
+
+        <div class="flex lg:hidden items-center justify-between py-2 gap-2 overflow-x-auto no-scrollbar">
+          <div id="mobile-quick-nav" class="flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold"></div>
+          <button onclick="scrollToLiveTV()" class="shrink-0 bg-liveRed text-white px-2.5 py-1 rounded-md text-xs font-inter font-bold flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-white live-dot"></span>
+            LIVE
+          </button>
+        </div>
       </div>
+
+      <div id="mobile-menu-drawer" class="hidden lg:hidden bg-navyDark border-t border-slate-700 px-4 py-3 space-y-1"></div>
     </nav>
 
-    <!-- Breaking News Ticker -->
-    <div class="bg-white border-b border-slate-200 shadow-sm">
+    <!-- 4. BREAKING NEWS TICKER BAR -->
+    <div class="bg-white border-b border-slate-200 shadow-sm no-print">
       <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center gap-3 overflow-hidden">
-        <div class="shrink-0 bg-liveRed text-white px-3 py-1 rounded-md font-inter font-extrabold text-xs tracking-wider flex items-center gap-2">
+        <div class="shrink-0 bg-liveRed text-white px-3 py-1 rounded-md font-inter font-extrabold text-xs sm:text-sm tracking-wider flex items-center gap-2 shadow-sm">
           <span class="w-2 h-2 rounded-full bg-white live-dot"></span>
           <span>BREAKING NEWS</span>
         </div>
         <div class="relative flex-1 overflow-hidden">
-          <div id="breaking-ticker-track" class="ticker-track gap-8 text-sm font-semibold text-navyDark"></div>
+          <div id="breaking-ticker-track" class="ticker-track gap-8 text-sm sm:text-base font-semibold text-navyDark"></div>
         </div>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <main id="app-main-content" class="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-6">
-      <div class="text-center py-12 text-slate-500 font-semibold">সংবাদ লোড হচ্ছে...</div>
-    </main>
+    <!-- BELOW NAVIGATION ADVERTISEMENT -->
+    <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pt-3 no-print">
+      <div id="ad-slot-below-nav"></div>
+    </div>
 
-    <!-- Footer -->
-    <footer class="bg-navyDark text-slate-300 border-t-4 border-emeraldMid mt-10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-        <p>© ২০২৬ <span class="text-white font-semibold">বঙ্গনূর (BANGANUR)</span>। সর্বস্বত্ব সংরক্ষিত।</p>
-        <p>সম্পাদক: <span class="text-amber-400 font-semibold">মুহাম্মাদ আব্দুল মাতিন</span> | ম্যানেজার: <span class="text-emerald-400 font-semibold">তরিকুল ইসলাম</span></p>
+    <!-- DYNAMIC VIEWPORT -->
+    <main id="app-main-content" class="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-6"></main>
+
+    <!-- FOOTER ADVERTISEMENT -->
+    <div class="max-w-7xl mx-auto w-full px-3 sm:px-6 pb-6 no-print">
+      <div id="ad-slot-footer"></div>
+    </div>
+
+    <!-- 13. PROFESSIONAL NEWSPAPER FOOTER -->
+    <footer class="bg-navyDark text-slate-300 border-t-4 border-emeraldMid no-print">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-emeraldDeep border border-amber-500 flex items-center justify-center text-amber-400 font-extrabold text-xl">
+                ব
+              </div>
+              <div>
+                <h2 class="text-2xl font-extrabold text-white leading-none">বঙ্গনূর <span class="font-inter text-base text-amber-400">BANGANUR</span></h2>
+                <p class="font-inter text-[10px] tracking-widest text-emerald-400 uppercase mt-1">BENGALI DIGITAL NEWS PORTAL</p>
+              </div>
+            </div>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              সত্য, নিরপেক্ষ ও দায়িত্বশীল সাংবাদিকতার অঙ্গীকার নিয়ে বঙ্গনূর (BANGANUR) বাংলার প্রতিটি প্রান্তের খবর, সাহিত্য, ইতিহাস ও ঐতিহ্যকে বিশ্বদরবারে তুলে ধরে।
+            </p>
+            <div class="flex items-center gap-3 pt-1">
+              <a id="footer-fb-link" href="#" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-blue-600 text-white flex items-center justify-center transition"><i class="fa-brands fa-facebook-f"></i></a>
+              <a id="footer-yt-link" href="#" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-red-600 text-white flex items-center justify-center transition"><i class="fa-brands fa-youtube"></i></a>
+              <a id="footer-wa-link" href="#" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-emerald-600 text-white flex items-center justify-center transition"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-white font-bold text-lg mb-4 border-l-4 border-amber-500 pl-3">সংবাদ বিভাগ</h3>
+            <ul class="grid grid-cols-2 gap-2 text-sm">
+              <li><button onclick="navigateTo('category', 'রাজ্য')" class="hover:text-amber-400 transition">রাজ্য</button></li>
+              <li><button onclick="navigateTo('category', 'দেশ')" class="hover:text-amber-400 transition">দেশ</button></li>
+              <li><button onclick="navigateTo('category', 'বিশ্ব')" class="hover:text-amber-400 transition">বিশ্ব</button></li>
+              <li><button onclick="navigateTo('category', 'সাহিত্য')" class="hover:text-amber-400 transition">সাহিত্য</button></li>
+              <li><button onclick="navigateTo('category', 'ইতিহাস ও ঐতিহ্য')" class="hover:text-amber-400 transition">ইতিহাস ও ঐতিহ্য</button></li>
+              <li><button onclick="navigateTo('category', 'সম্পাদকীয়')" class="hover:text-amber-400 transition">সম্পাদকীয়</button></li>
+              <li><button onclick="handleCustomLinkOrView('epaper')" class="hover:text-amber-400 transition font-inter">E-PAPER</button></li>
+              <li><button onclick="handleCustomLinkOrView('books')" class="hover:text-amber-400 transition font-inter">PDF BOOK</button></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-white font-bold text-lg mb-4 border-l-4 border-emerald-500 pl-3">নীতিমালা ও তথ্য</h3>
+            <ul class="space-y-2 text-sm">
+              <li><button onclick="openPolicyModal('about')" class="hover:text-amber-400 transition">আমাদের সম্পর্কে (About Us)</button></li>
+              <li><button onclick="openPolicyModal('editorial')" class="hover:text-amber-400 transition">সম্পাদকীয় নীতিমালা (Editorial Policy)</button></li>
+              <li><button onclick="openPolicyModal('privacy')" class="hover:text-amber-400 transition">গোপনীয়তা নীতি (Privacy Policy)</button></li>
+              <li><button onclick="openPolicyModal('terms')" class="hover:text-amber-400 transition">শর্তাবলী (Terms & Conditions)</button></li>
+              <li><button onclick="openPolicyModal('ads')" class="hover:text-amber-400 transition">বিজ্ঞাপন দিন (Advertisement)</button></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="text-white font-bold text-lg mb-4 border-l-4 border-liveRed pl-3">যোগাযোগ ও সম্পাদকীয় দপ্তর</h3>
+            <ul class="space-y-2 text-sm text-slate-300">
+              <li class="flex items-start gap-2.5">
+                <i class="fa-solid fa-user-tie text-amber-400 mt-1"></i>
+                <span><strong>সম্পাদক:</strong> মুহাম্মাদ আব্দুল মাতিন</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i class="fa-solid fa-briefcase text-amber-400 mt-1"></i>
+                <span><strong>ম্যানেজার:</strong> তরিকুল ইসলাম</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i class="fa-solid fa-location-dot text-amber-400 mt-1"></i>
+                <span>বঙ্গনূর ভবন, কাউকেপাড়া, দেগঙ্গা, উত্তর 24 পরগনা, পিন নং 743424</span>
+              </li>
+              <li class="flex items-center gap-2.5 font-inter text-xs sm:text-sm">
+                <i class="fa-solid fa-phone text-amber-400"></i>
+                <span>যোগাযোগ: 3216 242022 | মোবাইল: 96474 82859</span>
+              </li>
+              <li class="flex items-center gap-2.5 font-inter text-xs sm:text-sm">
+                <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+                <a href="#" target="_blank" rel="noopener" class="hover:text-emerald-300 transition">WhatsApp: 9647109481</a>
+              </li>
+              <li class="flex items-center gap-2.5 font-inter text-xs sm:text-sm">
+                <i class="fa-solid fa-envelope text-amber-400"></i>
+                <a href="mailto:banganur@gmail.com" class="hover:text-amber-300 transition">banganur@gmail.com</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-10 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+          <p>© ২০২৬ <span class="text-white font-semibold">বঙ্গনূর (BANGANUR)</span>। সর্বস্বত্ব সংরক্ষিত।</p>
+          <p>সম্পাদক: <span class="text-amber-400 font-semibold">মুহাম্মাদ আব্দুল মাতিন</span> | ম্যানেজার: <span class="text-emerald-400 font-semibold">তরিকুল ইসলাম</span></p>
+        </div>
       </div>
     </footer>
+
+    <div id="ad-slot-mobile-sticky" class="md:hidden sticky bottom-0 z-30 bg-white border-t border-slate-200 p-1.5 shadow-lg no-print"></div>
+  </div>
+
+  <!-- UNIVERSAL MODAL -->
+  <div id="universal-modal" class="hidden fixed inset-0 z-50 bg-navyDark/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
+      <div class="px-5 py-4 bg-emeraldDeep text-white flex items-center justify-between">
+        <h3 id="modal-title" class="text-lg sm:text-xl font-bold">শিরোনাম</h3>
+        <button onclick="closeUniversalModal()" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="modal-body" class="p-5 sm:p-6 overflow-y-auto flex-1"></div>
+    </div>
   </div>
 
   <script>
-    // আপনার Cloudflare Worker-এর URL এখানে দিন
     const WORKER_API_URL = "https://banganur-api.sadikul2007.workers.dev";
 
-    const CATEGORIES = ['রাজ্য', 'দেশ', 'বিশ্ব', 'সাহিত্য', 'ইতিহাস ও ঐতিহ্য', 'সম্পাদকীয়', 'অন্যান্য'];
+    // ডিফল্ট কাস্টম লিংকগুলো '#' রাখা হয়েছে—লিংক দিলে সরাসরি খুলবে, '#' থাকলে অভ্যন্তরীণ সেকশন/বার্তা দেখাবে
+    const CUSTOM_LINKS = {
+      epaperUrl: "#",
+      booksUrl: "#",
+      facebookUrl: "#",
+      youtubeUrl: "#",
+      whatsappUrl: "#",
+      adTargetUrl: "#"
+    };
 
-    const FALLBACK_ARTICLES = [
-      {
-        id: 'news-1',
-        title: 'উত্তুরে হাওয়ার দাপটে কলকাতা ও উত্তর ২৪ পরগনাসহ দক্ষিণবঙ্গে শীতের আমেজ',
-        subheadline: 'আগামী কয়েক দিনে রাতের তাপমাত্রা আরও কমার পূর্বাভাস',
-        category: 'রাজ্য',
-        author: 'মুহাম্মাদ আব্দুল মাতিন',
-        date: 'নভেম্বর ২০২৬',
-        image: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80',
-        summary: 'দক্ষিণবঙ্গে শীতের আমেজ শুরু হয়েছে। ভোরের দিকে হালকা কুয়াশা ও মনোরম আবহাওয়া বিরাজ করছে।',
-        content: 'কলকাতা ও উত্তর ২৪ পরগনাসহ দক্ষিণবঙ্গের বিভিন্ন জেলায় শীতের আমেজ অনুভূত হচ্ছে। আবহাওয়া দপ্তর জানিয়েছে, আগামী কয়েকদিন শুষ্ক আবহাওয়া থাকবে।'
-      }
-    ];
+    function createEditorialSVG(theme, label = 'বঙ্গনূর সংবাদ') {
+      const palettes = {
+        emerald: ['#064E3B', '#047857', '#D97706'],
+        navy: ['#0F172A', '#1E3A8A', '#F59E0B'],
+        crimson: ['#7F1D1D', '#DC2626', '#FBBF24'],
+        heritage: ['#78350F', '#B45309', '#10B981'],
+        literature: ['#312E81', '#4338CA', '#F59E0B'],
+        world: ['#134E4A', '#0F766E', '#38BDF8']
+      };
+      const [c1, c2, accent] = palettes[theme] || palettes.emerald;
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450">
+          <defs>
+            <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${c1}"/>
+              <stop offset="100%" stop-color="${c2}"/>
+            </linearGradient>
+          </defs>
+          <rect width="800" height="450" fill="url(#g)"/>
+          <circle cx="680" cy="90" r="160" fill="${accent}" opacity="0.16"/>
+          <circle cx="120" cy="390" r="190" fill="#ffffff" opacity="0.06"/>
+          <path d="M0 340 Q 220 270, 440 340 T 800 310 L 800 450 L 0 450 Z" fill="#000000" opacity="0.22"/>
+          <rect x="44" y="42" width="170" height="34" rx="6" fill="${accent}"/>
+          <text x="129" y="64" font-family="sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="middle">BANGANUR TV</text>
+          <text x="44" y="245" font-family="sans-serif" font-size="40" font-weight="bold" fill="#ffffff">${label}</text>
+          <text x="44" y="290" font-family="sans-serif" font-size="18" fill="#E2E8F0" opacity="0.9">বঙ্গনূর ডিজিটাল নিউজ ডেস্ক • কলকাতা</text>
+        </svg>`;
+      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    }
 
-    let portalData = {
-      articles: FALLBACK_ARTICLES,
-      breakingNews: [
-        { id: 'bn-1', text: 'বঙ্গনূর ডিজিটাল নিউজ পোর্টালে আপনাকে স্বাগতম — সত্য ও নিরপেক্ষ সংবাদের বিশ্বস্ত মাধ্যম', article_id: 'news-1' }
-      ],
+    const appState = {
+      settings: {
+        siteName: 'বঙ্গনূর (BANGANUR)',
+        subtitle: 'BENGALI DIGITAL NEWS PORTAL',
+        bengaliDate: '২৬ কার্তিক ১৪৩৩ বঙ্গাব্দ',
+        weather: 'কলকাতা ২৮°C • পরিষ্কার আকাশ',
+        editorInChief: 'মুহাম্মাদ আব্দুল মাতিন',
+        managerName: 'তরিকুল ইসলাম',
+        officeAddress: 'বঙ্গনূর ভবন, কাউকেপাড়া, দেগঙ্গা, উত্তর 24 পরগনা, পিন নং 743424',
+        phoneLandline: '3216 242022',
+        mobileNumber: '96474 82859',
+        whatsappNumber: '9647109481',
+        emailAddress: 'banganur@gmail.com',
+        socials: {
+          facebook: CUSTOM_LINKS.facebookUrl,
+          youtube: CUSTOM_LINKS.youtubeUrl,
+          whatsapp: CUSTOM_LINKS.whatsappUrl
+        },
+        homepage: {
+          showLiveTV: true,
+          showNamazWidget: true,
+          heroArticleId: 'news-1'
+        }
+      },
       liveTV: {
-        active: 1,
+        active: true,
         platform: 'youtube',
         url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk',
-        title: 'বঙ্গনূর নিউজ স্টুডিও লাইভ',
-        description: 'সরাসরি সম্প্রচার'
+        title: 'বঙ্গনূর নিউজ স্টুডিও লাইভ: বাংলার প্রাইম টাইম সংবাদ ও বিশেষ আলোচনা',
+        description: 'বঙ্গনূর ভবন স্টুডিও থেকে সরাসরি সম্প্রচার — রাজ্য, দেশ, সাহিত্য ও সমসাময়িক ঘটনাবলীর বিশেষ বিশ্লেষণ।'
+      },
+      breakingNews: [
+        { id: 'bn-1', text: 'কলকাতা ও উত্তর ২৪ পরগনাসহ দক্ষিণবঙ্গে শীতের আমেজ, তাপমাত্রা নামল ১৮ ডিগ্রির ঘরে', articleId: 'news-1', active: true },
+        { id: 'bn-2', text: 'দেগঙ্গা ও বসিরহাট মহকুমার গ্রামীণ সড়ক সংস্কারে নতুন প্রকল্পের অনুমোদন', articleId: 'news-2', active: true },
+        { id: 'bn-3', text: 'আন্তর্জাতিক কলকাতা বইমেলায় এবার থাকছে বিশেষ বাংলা ঐতিহ্য প্যাভিলিয়ন', articleId: 'news-5', active: true },
+        { id: 'bn-4', text: 'বিশ্ব অর্থনীতিতে নতুন সমীকরণ: এশিয়ার বাজারে ভারতের রপ্তানি বৃদ্ধি', articleId: 'news-4', active: true }
+      ],
+      categories: [
+        'রাজ্য', 'দেশ', 'বিশ্ব', 'সাহিত্য', 'ইতিহাস ও ঐতিহ্য', 'সম্পাদকীয়', 'অন্যান্য'
+      ],
+      articles: [
+        {
+          id: 'news-1',
+          title: 'উত্তুরে হাওয়ার দাপটে কলকাতা ও উত্তর ২৪ পরগনাসহ দক্ষিণবঙ্গে শীতের আমেজ, আবহাওয়া দপ্তরের বড় পূর্বাভাস',
+          subheadline: 'আগামী ৪৮ ঘণ্টায় আরও ২ থেকে ৩ ডিগ্রি সেলসিয়াস কমতে পারে রাতের পারদ',
+          slug: 'kolkata-winter-update-imd-forecast',
+          category: 'রাজ্য',
+          author: 'মুহাম্মাদ আব্দুল মাতিন',
+          date: '১২ নভেম্বর, ২০২৬ • দুপুর ১:১৫',
+          status: 'published',
+          featured: true,
+          image: createEditorialSVG('emerald', 'দক্ষিণবঙ্গে শীতের আমেজ'),
+          summary: 'কার্তিকের শেষ লগ্নেই বঙ্গে শীতের আগমনী বার্তা। আলিপুর আবহাওয়া দপ্তর জানিয়েছে, উত্তর-পশ্চিম দিক থেকে শুষ্ক শীতল হাওয়া রাজ্যে প্রবেশ করায় রাতের তাপমাত্রা স্বাভাবিকের চেয়ে নিচে নেমেছে।',
+          content: 'কলকাতা: কার্তিকের শেষ সপ্তাহেই রাজ্যজুড়ে অনুভূত হচ্ছে মনোরম শীতের আমেজ। ভোরের দিকে হালকা কুয়াশা এবং রাতের তাপমাত্রা কমায় শহর কলকাতা থেকে শুরু করে উত্তর ২৪ পরগনা ও জেলায় জেলায় শীতের আমেজ ছড়িয়ে পড়েছে।\n\nআলিপুর আবহাওয়া দপ্তরের সর্বশেষ বুলেটিন অনুযায়ী, আগামী চার থেকে পাঁচ দিন দক্ষিণবঙ্গের জেলাগুলিতে শুষ্ক আবহাওয়া বজায় থাকবে। বৃষ্টির কোনো সম্ভাবনা নেই।'
+        },
+        {
+          id: 'news-2',
+          title: 'দেগঙ্গা, হাড়োয়া ও বসিরহাট অঞ্চলে যোগাযোগ ব্যবস্থার আমূল পরিবর্তন, নতুন সড়ক ও সেতু প্রকল্পের সূচনা',
+          subheadline: 'উপকৃত হবেন উত্তর ২৪ পরগনা জেলার লক্ষাধিক মানুষ',
+          slug: 'north-24-parganas-bridge-development',
+          category: 'রাজ্য',
+          author: 'তরিকুল ইসলাম',
+          date: '১২ নভেম্বর, ২০২৬ • সকাল ১১:৪০',
+          status: 'published',
+          featured: true,
+          image: createEditorialSVG('navy', 'গ্রামীণ পরিকাঠামো উন্নয়ন'),
+          summary: 'উত্তর ২৪ পরগনার প্রত্যন্ত এলাকার সঙ্গে কলকাতার সরাসরি সড়ক যোগাযোগ আরও মসৃণ করতে নতুন কংক্রিট সেতু ও প্রশস্ত রাস্তার কাজের সূচনা হলো।',
+          content: 'দেগঙ্গা: উত্তর ২৪ পরগনা জেলার গ্রামীণ অর্থনীতি ও যোগাযোগ ব্যবস্থাকে আরও গতিশীল করতে নতুন সড়ক ও সেতু সংস্কার প্রকল্পের কাজ শুরু হয়েছে। এই প্রকল্প বাস্তবায়িত হলে কৃষিপণ্য পরিবহনে সময় অর্ধেকে নেমে আসবে।'
+        },
+        {
+          id: 'news-3',
+          title: 'ডিজিটাল শিক্ষা ও গবেষণা পরিকাঠামোয় বড় বিনিয়োগ, দেশের ৫০টি বিশ্ববিদ্যালয়ে নতুন এআই ল্যাব',
+          subheadline: 'ভারতীয় ভাষায় কৃত্রিম বুদ্ধিমত্তা গবেষণাকে অগ্রাধিকার দেওয়ার সিদ্ধান্ত',
+          slug: 'india-universities-ai-research-labs',
+          category: 'দেশ',
+          author: 'দেবাশিস সেনগুপ্ত',
+          date: '১২ নভেম্বর, ২০২৬ • সকাল ১০:২০',
+          status: 'published',
+          featured: true,
+          image: createEditorialSVG('crimson', 'উচ্চশিক্ষায় এআই গবেষণা'),
+          summary: 'বাংলাসহ ২২টি ভারতীয় ভাষায় প্রযুক্তিগত উদ্ভাবন ও গবেষণাকে উৎসাহ দিতে দেশের শীর্ষস্থানীয় বিশ্ববিদ্যালয়গুলিতে অত্যাধুনিক ল্যাবরেটরি স্থাপন করা হচ্ছে।',
+          content: 'নয়াদিল্লি: উচ্চশিক্ষা ও প্রযুক্তির মেলবন্ধন ঘটাতে কেন্দ্রীয় শিক্ষা ও তথ্যপ্রযুক্তি মন্ত্রকের যৌথ উদ্যোগে দেশের ৫০টি বিশ্ববিদ্যালয়ে কৃত্রিম বুদ্ধিমত্তা (AI) ও ডেটা সায়েন্স গবেষণা কেন্দ্র গড়ে তোলা হচ্ছে।'
+        },
+        {
+          id: 'news-4',
+          title: 'নবায়নযোগ্য জ্বালানি উৎপাদনে ঐতিহাসিক মাইলফলক, আন্তর্জাতিক সম্মেলনে প্রশংসিত দক্ষিণ এশিয়া',
+          subheadline: 'সৌর ও বায়ু বিদ্যুৎ প্রকল্পে রেকর্ড বিনিয়োগের ঘোষণা',
+          slug: 'global-renewable-energy-milestone',
+          category: 'বিশ্ব',
+          author: 'আবদুল্লাহ আল মামুন',
+          date: '১১ নভেম্বর, ২০২৬ • রাত ৯:১০',
+          status: 'published',
+          featured: true,
+          image: createEditorialSVG('world', 'বিশ্ব জলবায়ু ও সৌরশক্তি'),
+          summary: 'জলবায়ু পরিবর্তন মোকাবিলায় পরিবেশবান্ধব জ্বালানির ব্যবহার দ্রুত বাড়ছে। আন্তর্জাতিক শক্তি সংস্থার প্রতিবেদনে উঠে এসেছে আশাব্যঞ্জক তথ্য।',
+          content: 'জেনেভা: বিশ্বজুড়ে কার্বন নিঃসরণ কমাতে সৌর ও বায়ু বিদ্যুতের উৎপাদন গত বছরের তুলনায় ২২ শতাংশ বৃদ্ধি পেয়েছে।'
+        },
+        {
+          id: 'news-5',
+          title: 'শতবর্ষের আলোকে কাজী নজরুল ইসলাম ও বাংলার সাম্যবাদী সাহিত্যধারা',
+          subheadline: 'আধুনিক বাংলা কবিতা ও সংগীতে বিদ্রোহী কবির চিরন্তন প্রাসঙ্গিকতা',
+          slug: 'kazi-nazrul-islam-bengali-literature',
+          category: 'সাহিত্য',
+          author: 'কবি শামসুল আলম',
+          date: '১১ নভেম্বর, ২০২৬ • সন্ধ্যা ৭:৩০',
+          status: 'published',
+          featured: false,
+          image: createEditorialSVG('literature', 'বাংলা সাহিত্যের অমর ধারা'),
+          summary: 'বাংলা সাহিত্যের ইতিহাসে কাজী নজরুল ইসলাম কেবল একজন কবি নন, তিনি একটি যুগের নাম। তাঁর লেখনীতে মানবতা, অসাম্প্রদায়িক চেতনা ও মুক্তির জয়গান আজও সমান উজ্জ্বল।',
+          content: 'বাংলার চিরায়ত সাহিত্যধারায় কাজী নজরুল ইসলামের আবির্ভাব ছিল ধূমকেতুর মতো। একদিকে যেমন তিনি অগ্নিবীণার সুরে পরাধীনতার শৃঙ্খল ভাঙার ডাক দিয়েছেন, অন্যদিকে দোলনচাঁপা ও ছায়ানটের পাতায় এঁকেছেন কোমল প্রেম ও প্রকৃতির অপরূপ ছবি।'
+        },
+        {
+          id: 'news-6',
+          title: 'চন্দ্রকেতুগড় (দেগঙ্গা-বেড়াচাঁপা): দুই হাজার বছরের প্রাচীন বঙ্গীয় সভ্যতা ও প্রত্নতাত্ত্বিক ঐতিহ্যের সন্ধানে',
+          subheadline: 'ঐতিহাসিক গঙ্গারিডি সভ্যতার নিদর্শন সংরক্ষণে নতুন উদ্যোগ',
+          slug: 'chandraketugarh-deganga-bengal-heritage-history',
+          category: 'ইতিহাস ও ঐতিহ্য',
+          author: 'ড. ফারুক হোসেন',
+          date: '১১ নভেম্বর, ২০২৬ • বিকেল ৫:০০',
+          status: 'published',
+          featured: false,
+          image: createEditorialSVG('heritage', 'চন্দ্রকেতুগড় ও বাংলার ঐতিহ্য'),
+          summary: 'উত্তর ২৪ পরগনার দেগঙ্গা ও বেড়াচাঁপা অঞ্চলের বিদ্যাধরী নদীর অববাহিকায় গড়ে ওঠা প্রাচীন চন্দ্রকেতুগড় সভ্যতা বাংলার গৌরবময় ইতিহাসের জীবন্ত সাক্ষী।',
+          content: 'উত্তর ২৪ পরগনার দেগঙ্গা ও বেড়াচাঁপা অঞ্চলের চন্দ্রকেতুগড় প্রাচীন গঙ্গারিডি সভ্যতার অন্যতম প্রধান কেন্দ্র ছিল বলে ইতিহাসবিদরা মনে করেন। এখান থেকে প্রাপ্ত পোড়ামাটির শিল্পকর্ম, মুদ্রা ও মৃৎপাত্র প্রমাণ করে যে খ্রিস্টপূর্ব তৃতীয় শতকেও বাংলা ছিল আন্তর্জাতিক বাণিজ্যের পীঠস্থান।'
+        },
+        {
+          id: 'news-7',
+          title: 'ডিজিটাল যুগে আঞ্চলিক ভাষার সাংবাদিকতা: বিশ্বাসযোগ্যতাই পাঠকের আসল শক্তি',
+          subheadline: 'বঙ্গনূর বিশেষ সম্পাদকীয় নিবন্ধ',
+          slug: 'editorial-bengali-digital-journalism-trust',
+          category: 'সম্পাদকীয়',
+          author: 'মুহাম্মাদ আব্দুল মাতিন',
+          date: '১২ নভেম্বর, ২০২৬ • সকাল ৮:০০',
+          status: 'published',
+          featured: false,
+          image: createEditorialSVG('emerald', 'সম্পাদকীয় কলাম'),
+          summary: 'সামাজিক মাধ্যমের যুগে তথ্যের গতি বেড়েছে ঠিকই, কিন্তু যাচাইকৃত সত্য সংবাদের প্রয়োজনীয়তা আজ আগের যেকোনো সময়ের চেয়ে বেশি।',
+          content: 'তথ্যপ্রযুক্তির বিপ্লবের ফলে সংবাদ এখন মুহূর্তের মধ্যে পাঠকের হাতের মুঠোয় পৌঁছে যাচ্ছে। তবে গতির প্রতিযোগিতায় অনেক সময় তথ্যের সত্যতা যাচাই উপেক্ষিত থেকে যায়। বঙ্গনূর (BANGANUR) সেই সুস্থ, গঠনমূলক ও শিক্ষামূলক সাংবাদিকতার ধারাকে এগিয়ে নিয়ে যেতে প্রতিশ্রুতিবদ্ধ।'
+        },
+        {
+          id: 'news-8',
+          title: 'সুস্থ থাকতে শীতের শুরুতে প্রতিদিনের খাদ্যতালিকায় রাখুন মৌসুমি শাকসবজি ও মধু',
+          subheadline: 'ঋতু পরিবর্তনের সময় রোগ প্রতিরোধ ক্ষমতা বাড়াতে চিকিৎসকদের পরামর্শ',
+          slug: 'health-tips-winter-nutrition-bengal',
+          category: 'অন্যান্য',
+          author: 'ডা. রফিকুল ইসলাম',
+          date: '১০ নভেম্বর, ২০২৬ • বিকেল ৪:১৫',
+          status: 'published',
+          featured: false,
+          image: createEditorialSVG('navy', 'স্বাস্থ্য ও জীবনযাত্রা'),
+          summary: 'আবহাওয়া পরিবর্তনের এই সময়ে সর্দি-কাশি ও ভাইরাসজনিত সংক্রমণ এড়াতে প্রাকৃতিক পুষ্টিকর খাবার ও পর্যাপ্ত জলপানের ওপর জোর দিচ্ছেন বিশেষজ্ঞরা।',
+          content: 'ঋতু পরিবর্তনের সন্ধিক্ষণে শরীরের রোগ প্রতিরোধ ক্ষমতা কিছুটা দুর্বল হয়ে পড়ে। চিকিৎসকদের মতে, প্রতিদিনের খাবারে ভিটামিন-সি যুক্ত ফল, তুলসী পাতা, আদা এবং খাঁটি মধু রাখলে সংক্রমণের ঝুঁকি অনেকটাই কমে যায়।'
+        }
+      ],
+      ads: [
+        {
+          id: 'ad-1',
+          title: 'বঙ্গনূর গ্রন্থমেলা বিশেষ ছাড়',
+          placement: 'header',
+          url: CUSTOM_LINKS.adTargetUrl,
+          bgGradient: 'from-emeraldDeep via-emeraldMid to-navyDark',
+          badge: 'SPONSORED • 728×90',
+          headline: 'বাংলার ইতিহাস ও সাহিত্যের সেরা বই সংগ্রহ করুন ঘরে বসেই',
+          cta: 'বই দেখুন →',
+          active: true
+        },
+        {
+          id: 'ad-2',
+          title: 'বঙ্গনূর পত্রিকা ও ডিজিটাল বিজ্ঞাপন বিভাগ',
+          placement: 'below-nav',
+          url: CUSTOM_LINKS.adTargetUrl,
+          bgGradient: 'from-amber-700 via-amber-600 to-navyDark',
+          badge: 'ADVERTISEMENT',
+          headline: 'আপনার প্রতিষ্ঠান, স্কুল, মাদ্রাসা বা ব্যবসার বিজ্ঞাপনের জন্য যোগাযোগ করুন: 96474 82859',
+          cta: 'যোগাযোগ করুন',
+          active: true
+        },
+        {
+          id: 'ad-3',
+          title: 'নূর ডিজিটাল একাডেমি - স্কলারশিপ প্রোগ্রাম',
+          placement: 'sidebar',
+          url: CUSTOM_LINKS.adTargetUrl,
+          bgGradient: 'from-navyDark via-emeraldDeep to-emeraldMid',
+          badge: 'AD • 300×250',
+          headline: 'মেধাবী শিক্ষার্থীদের জন্য বিশেষ স্কলারশিপে কম্পিউটার ও ভাষা শিক্ষা',
+          cta: 'আবেদন করুন',
+          active: true
+        },
+        {
+          id: 'ad-4',
+          title: 'বঙ্গনূর হোয়াটসঅ্যাপ নিউজ চ্যানেল',
+          placement: 'between-sections',
+          url: CUSTOM_LINKS.adTargetUrl,
+          bgGradient: 'from-slate-900 via-emeraldDeep to-slate-900',
+          badge: 'BANGANUR NETWORK',
+          headline: 'সবার আগে ব্রেকিং নিউজ ও ই-পেপার পেতে যুক্ত হোন বঙ্গনূর হোয়াটসঅ্যাপে: 9647109481',
+          cta: 'যুক্ত হোন',
+          active: true
+        },
+        {
+          id: 'ad-5',
+          title: 'বঙ্গনূর প্রকাশনী কলকাতা ও দেগঙ্গা',
+          placement: 'article',
+          url: CUSTOM_LINKS.adTargetUrl,
+          bgGradient: 'from-emeraldDeep to-teal-800',
+          badge: 'ADVERTISEMENT',
+          headline: 'বিশুদ্ধ বাংলা অনুবাদ, ইতিহাস ও সাহিত্য গ্রন্থমালা — এখন অনলাইনে উপলব্ধ',
+          cta: 'বিস্তারিত →',
+          active: true
+        },
+        {
+          id: 'ad-6',
+          title: 'বঙ্গনূর বিজ্ঞাপন ডেস্ক',
+          placement: 'footer',
+          url: CUSTOM_LINKS.adTargetUrl,
+          bgGradient: 'from-navyDark via-slate-800 to-emeraldDeep',
+          badge: 'ADVERTISE WITH US',
+          headline: 'বঙ্গনূর পত্রিকা, ডিজিটাল পোর্টাল ও লাইভ টিভিতে বিজ্ঞাপন দিন • banganur@gmail.com',
+          cta: 'যোগাযোগ করুন',
+          active: true
+        },
+        {
+          id: 'ad-7',
+          title: 'বঙ্গনূর ই-পেপার প্রতিদিন সকালে বিনামূল্যে পড়ুন',
+          placement: 'mobile',
+          url: CUSTOM_LINKS.adTargetUrl,
+          bgGradient: 'from-emeraldDeep to-navyDark',
+          badge: 'E-PAPER',
+          headline: 'প্রতিদিনের বঙ্গনূর পত্রিকা পড়ুন মোবাইলে',
+          cta: 'পড়ুন',
+          active: true
+        }
+      ],
+      epapers: [
+        {
+          id: 'ep-104',
+          edition: 'বর্ষ ৪ • সংখ্যা ১০৪',
+          date: '2026-11-12',
+          bengaliDate: '২৬ কার্তিক ১৪৩৩ বঙ্গাব্দ',
+          month: 'November',
+          year: '2026',
+          pages: [
+            {
+              pageNo: 1,
+              title: 'প্রথম পাতা — প্রধান সংবাদ',
+              headlines: [
+                'উত্তুরে হাওয়ার দাপটে কলকাতা ও উত্তর ২৪ পরগনাসহ দক্ষিণবঙ্গে শীতের আমেজ',
+                'দেগঙ্গা, হাড়োয়া ও বসিরহাট অঞ্চলে যোগাযোগ ব্যবস্থার আমূল পরিবর্তন',
+                'দেশের ৫০টি বিশ্ববিদ্যালয়ে নতুন কৃত্রিম বুদ্ধিমত্তা গবেষণা কেন্দ্র'
+              ],
+              leadBody: 'বঙ্গনূর নিউজ ডেস্ক: কার্তিকের শেষ সপ্তাহেই রাজ্যজুড়ে অনুভূত হচ্ছে মনোরম শীতের আমেজ। সম্পাদক: মুহাম্মাদ আব্দুল মাতিন | বঙ্গনূর ভবন, কাউকেপাড়া, দেগঙ্গা।'
+            }
+          ]
+        }
+      ],
+      books: [
+        {
+          id: 'bk-1',
+          title: 'চন্দ্রকেতুগড় ও বাংলার ইতিহাস-ঐতিহ্য',
+          author: 'ড. ফারুক হোসেন',
+          category: 'ইতিহাস',
+          pagesCount: 248,
+          year: '২০২৬',
+          coverColor: '#064E3B',
+          description: 'উত্তর ২৪ পরগনার দেগঙ্গা-বেড়াচাঁপার প্রাচীন চন্দ্রকেতুগড় সভ্যতা থেকে আধুনিক বাংলার সামাজিক ও সাংস্কৃতিক ইতিহাসের প্রামাণ্য গ্রন্থ।',
+          sampleText: 'অধ্যায় ১: নদীর দেশে সভ্যতার উন্মেষ\n\nগঙ্গা, পদ্মা ও বিদ্যাধরী বিধৌত এই বদ্বীপ অঞ্চল প্রাচীনকাল থেকেই মানবসভ্যতার অন্যতম উর্বর ভূমি...'
+        },
+        {
+          id: 'bk-2',
+          title: 'নজরুল কাব্য ও সাম্যবাদের দর্শন',
+          author: 'কবি শামসুল আলম',
+          category: 'সাহিত্য',
+          pagesCount: 184,
+          year: '২০২৬',
+          coverColor: '#1E3A8A',
+          description: 'বিদ্রোহী কবি কাজী নজরুল ইসলামের কবিতা, গান ও প্রবন্ধে মানবতাবাদ এবং অসাম্প্রদায়িক চেতনার গভীর বিশ্লেষণ।',
+          sampleText: 'ভূমিকা:\n\nকাজী নজরুল ইসলামের সাহিত্যকর্মে যে নির্ভীক সত্যভাষণ ও সাম্যের বাণী ধ্বনিত হয়েছে, তা বিশ্বসাহিত্যে বিরল...'
+        }
+      ],
+      prayerSettings: {
+        city: 'Kolkata',
+        country: 'India',
+        method: 1,
+        school: 1,
+        offsets: { Fajr: 0, Sunrise: 0, Dhuhr: 0, Asr: 0, Maghrib: 0, Isha: 0 }
       }
     };
 
     let currentRoute = { view: 'home', param: null };
+    let prayerCache = null;
+    let prayerCountdownInterval = null;
 
-    function setDates() {
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const colors = {
+        success: 'bg-emeraldDeep text-white border-emerald-400',
+        error: 'bg-liveRed text-white border-red-300',
+        info: 'bg-navyDark text-white border-amber-400'
+      };
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-xl border text-xs sm:text-sm font-semibold flex items-center justify-between gap-3 transition-all ${colors[type] || colors.info}`;
+      toast.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()" class="opacity-75 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    function openUniversalModal(title, bodyHtml) {
+      const modal = document.getElementById('universal-modal');
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-body').innerHTML = bodyHtml;
+      modal.classList.remove('hidden');
+    }
+
+    function closeUniversalModal() {
+      document.getElementById('universal-modal').classList.add('hidden');
+    }
+
+    function handleCustomLinkOrView(target) {
+      if (target === 'epaper') {
+        if (CUSTOM_LINKS.epaperUrl && CUSTOM_LINKS.epaperUrl !== '#') {
+          window.open(CUSTOM_LINKS.epaperUrl, '_blank', 'noopener,noreferrer');
+          return;
+        }
+        navigateTo('epaper');
+        return;
+      }
+      if (target === 'books') {
+        if (CUSTOM_LINKS.booksUrl && CUSTOM_LINKS.booksUrl !== '#') {
+          window.open(CUSTOM_LINKS.booksUrl, '_blank', 'noopener,noreferrer');
+          return;
+        }
+        navigateTo('books');
+      }
+    }
+
+    function updateHeaderMeta() {
+      const bnEl = document.getElementById('bengali-date-display');
       const enEl = document.getElementById('english-date-display');
+      if (bnEl) bnEl.textContent = appState.settings.bengaliDate;
       if (enEl) {
         enEl.textContent = new Date().toLocaleDateString('en-US', {
           weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
       }
+      const sc = appState.settings.socials;
+      ['top-fb-link', 'footer-fb-link'].forEach(id => { const el = document.getElementById(id); if (el) el.href = sc.facebook || '#'; });
+      ['top-yt-link', 'footer-yt-link'].forEach(id => { const el = document.getElementById(id); if (el) el.href = sc.youtube || '#'; });
+      ['top-wa-link', 'footer-wa-link'].forEach(id => { const el = document.getElementById(id); if (el) el.href = sc.whatsapp || '#'; });
     }
 
-    function populateCategoryUI() {
-      const select = document.getElementById('category-dropdown');
-      if (select) {
-        select.innerHTML = `<option value="সব">সব সংবাদ (All)</option>` +
-          CATEGORIES.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-      }
+    function renderNavigation() {
+      const navItems = [
+        { label: 'হোম', view: 'home', param: null },
+        ...appState.categories.map(cat => ({ label: cat, view: 'category', param: cat })),
+        { label: 'E-PAPER', view: 'epaper', param: null, isEn: true },
+        { label: 'PDF BOOK', view: 'books', param: null, isEn: true }
+      ];
 
-      const navList = document.getElementById('main-nav-list');
-      if (navList) {
-        const items = [{ label: 'হোম', view: 'home', param: null }, ...CATEGORIES.map(c => ({ label: c, view: 'category', param: c }))];
-        navList.innerHTML = items.map(item => {
-          const active = (item.view === 'home' && currentRoute.view === 'home') ||
-            (item.view === 'category' && currentRoute.view === 'category' && currentRoute.param === item.param);
-          return `<li>
+      const isActive = (item) => {
+        if (item.view === 'home' && currentRoute.view === 'home') return true;
+        if (item.view === 'category' && currentRoute.view === 'category' && currentRoute.param === item.param) return true;
+        if (item.view === 'epaper' && currentRoute.view === 'epaper') return true;
+        if (item.view === 'books' && currentRoute.view === 'books') return true;
+        return false;
+      };
+
+      const desktopList = document.getElementById('main-nav-list');
+      if (desktopList) {
+        desktopList.innerHTML = navItems.map(item => `
+          <li>
             <button onclick="navigateTo('${item.view}', ${item.param ? `'${item.param}'` : 'null'})"
-              class="px-3 py-2 rounded-lg transition ${active ? 'bg-amber-500 text-navyDark font-extrabold' : 'hover:bg-emeraldMid text-white'}">
+              class="px-3 py-2 rounded-lg transition ${item.isEn ? 'font-inter text-xs tracking-wider' : ''} ${isActive(item) ? 'bg-amber-500 text-navyDark font-extrabold shadow-sm' : 'hover:bg-emeraldMid text-white'}">
               ${item.label}
             </button>
-          </li>`;
-        }).join('');
+          </li>
+        `).join('');
+      }
+
+      const mobileQuick = document.getElementById('mobile-quick-nav');
+      if (mobileQuick) {
+        mobileQuick.innerHTML = navItems.map(item => `
+          <button onclick="navigateTo('${item.view}', ${item.param ? `'${item.param}'` : 'null'})"
+            class="px-2.5 py-1 rounded-md transition ${item.isEn ? 'font-inter text-xs' : ''} ${isActive(item) ? 'bg-amber-500 text-navyDark font-extrabold' : 'bg-white/10 text-white'}">
+            ${item.label}
+          </button>
+        `).join('');
+      }
+
+      const drawer = document.getElementById('mobile-menu-drawer');
+      if (drawer) {
+        drawer.innerHTML = navItems.map(item => `
+          <button onclick="toggleMobileMenu(); navigateTo('${item.view}', ${item.param ? `'${item.param}'` : 'null'})"
+            class="block w-full text-left px-3 py-2 rounded-lg text-sm font-semibold ${isActive(item) ? 'bg-emeraldDeep text-amber-400' : 'text-slate-200 hover:bg-slate-800'}">
+            ${item.label}
+          </button>
+        `).join('');
       }
     }
 
-    function onCategoryDropdownChange(val) {
-      if (val === 'সব') {
-        navigateTo('home');
-      } else {
-        navigateTo('category', val);
-      }
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu-drawer')?.classList.toggle('hidden');
     }
 
     function renderBreakingTicker() {
       const track = document.getElementById('breaking-ticker-track');
       if (!track) return;
-      const items = portalData.breakingNews || [];
-      if (!items.length) {
-        track.innerHTML = `<span>বঙ্গনূর ডিজিটাল নিউজ পোর্টালে আপনাকে স্বাগতম।</span>`;
+      const activeItems = appState.breakingNews.filter(b => b.active !== false && b.active !== 0);
+      if (!activeItems.length) {
+        track.innerHTML = `<span>বঙ্গনূর ডিজিটাল নিউজ পোর্টালে আপনাকে স্বাগতম — সত্য ও নিরপেক্ষ সংবাদের বিশ্বস্ত মাধ্যম।</span>`;
         return;
       }
-      const doubled = [...items, ...items];
-      track.innerHTML = doubled.map(b => `
-        <button onclick="${b.article_id ? `openArticleById('${b.article_id}')` : ''}" class="inline-flex items-center gap-2 hover:text-liveRed transition whitespace-nowrap">
-          <span class="text-liveRed">●</span>
-          <span>${b.text}</span>
-        </button>
-      `).join('');
+      const doubled = [...activeItems, ...activeItems];
+      track.innerHTML = doubled.map(b => {
+        const artId = b.articleId || b.article_id || '';
+        return `
+          <button onclick="${artId ? `openArticleById('${artId}')` : ''}" class="inline-flex items-center gap-2 hover:text-liveRed transition whitespace-nowrap">
+            <span class="text-liveRed">●</span>
+            <span>${b.text}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderAdSlot(placement) {
+      const ad = appState.ads.find(a => a.placement === placement && a.active);
+      if (!ad) return '';
+      const targetAttr = ad.url && ad.url !== '#' ? `href="${ad.url}" target="_blank" rel="noopener noreferrer"` : `href="#${placement}" onclick="event.preventDefault(); openPolicyModal('ads');"`;
+
+      if (placement === 'header') {
+        return `
+          <a ${targetAttr}
+             class="block w-full h-[78px] sm:h-[90px] rounded-xl bg-gradient-to-r ${ad.bgGradient} text-white px-4 sm:px-6 flex items-center justify-between shadow-md border border-amber-500/40 hover:opacity-95 transition overflow-hidden">
+            <div class="space-y-0.5 pr-2">
+              <span class="font-inter text-[10px] font-bold tracking-widest uppercase bg-white/15 px-2 py-0.5 rounded text-amber-300">${ad.badge}</span>
+              <p class="text-sm sm:text-base font-bold leading-snug line-clamp-1">${ad.headline}</p>
+            </div>
+            <span class="shrink-0 bg-amber-500 text-navyDark font-bold text-xs sm:text-sm px-3 py-1.5 rounded-lg shadow">${ad.cta}</span>
+          </a>`;
+      }
+
+      if (placement === 'sidebar') {
+        return `
+          <a ${targetAttr}
+             class="block w-full min-h-[250px] rounded-2xl bg-gradient-to-br ${ad.bgGradient} text-white p-6 flex flex-col justify-between shadow-md border border-emerald-500/30 hover:scale-[1.01] transition">
+            <div>
+              <span class="font-inter text-[10px] font-bold tracking-widest uppercase bg-amber-500 text-navyDark px-2.5 py-0.5 rounded">${ad.badge}</span>
+              <h4 class="text-xl font-bold mt-4 leading-snug">${ad.headline}</h4>
+              <p class="text-xs text-slate-200 mt-2">${ad.title}</p>
+            </div>
+            <div class="pt-4">
+              <span class="inline-block w-full text-center bg-white text-emeraldDeep font-bold text-sm py-2.5 rounded-xl shadow">${ad.cta}</span>
+            </div>
+          </a>`;
+      }
+
+      if (placement === 'mobile') {
+        return `
+          <a ${targetAttr}
+             class="flex items-center justify-between gap-2 bg-gradient-to-r ${ad.bgGradient} text-white px-3 py-2 rounded-lg text-xs">
+            <span class="font-bold truncate">${ad.headline}</span>
+            <span class="shrink-0 bg-amber-500 text-navyDark font-bold px-2.5 py-1 rounded">${ad.cta}</span>
+          </a>`;
+      }
+
+      return `
+        <a ${targetAttr}
+           class="block w-full rounded-xl bg-gradient-to-r ${ad.bgGradient} text-white px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm border border-slate-300/30 hover:opacity-95 transition">
+          <div class="flex flex-wrap items-center gap-2.5">
+            <span class="font-inter text-[10px] font-bold tracking-widest uppercase bg-white/15 px-2 py-0.5 rounded text-amber-300">${ad.badge}</span>
+            <span class="text-sm sm:text-base font-bold">${ad.headline}</span>
+          </div>
+          <span class="shrink-0 bg-amber-500 text-navyDark font-bold text-xs px-3.5 py-1.5 rounded-lg">${ad.cta}</span>
+        </a>`;
+    }
+
+    function refreshStaticAdSlots() {
+      document.getElementById('ad-slot-header').innerHTML = renderAdSlot('header');
+      document.getElementById('ad-slot-below-nav').innerHTML = renderAdSlot('below-nav');
+      document.getElementById('ad-slot-footer').innerHTML = renderAdSlot('footer');
+      document.getElementById('ad-slot-mobile-sticky').innerHTML = renderAdSlot('mobile');
     }
 
     function parseLiveStreamEmbed(platform, rawInput) {
-      if (!rawInput) return null;
-      const url = rawInput.trim();
+      if (!rawInput || typeof rawInput !== 'string') return null;
+      let url = rawInput.trim();
       if (platform === 'youtube') {
         const patterns = [
           /[?&]v=([a-zA-Z0-9_-]{11})/,
           /youtu\.be\/([a-zA-Z0-9_-]{11})/,
           /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/,
-          /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/
+          /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+          /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/
         ];
         for (const p of patterns) {
           const m = url.match(p);
           if (m && m[1]) {
-            return `https://www.youtube.com/embed/${m[1]}?autoplay=1&mute=1&rel=0&playsinline=1`;
+            return `https://www.youtube.com/embed/${m[1]}?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1`;
           }
         }
         return null;
       }
       if (platform === 'facebook') {
-        if (!url.includes('facebook.com') && !url.includes('fb.watch')) return null;
+        if (!url.includes('facebook.com') && !url.includes('fb.watch') && !url.includes('fb.com')) return null;
+        if (url.includes('facebook.com/plugins/video.php')) return url;
         return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=true&mute=true&width=1280`;
       }
       return null;
     }
 
     function renderLiveTVSection() {
-      const tv = portalData.liveTV;
-      if (!tv || !tv.active) return '';
-      const embedSrc = parseLiveStreamEmbed(tv.platform, tv.url);
-      if (!embedSrc) return '';
+      if (!appState.settings.homepage.showLiveTV) return '';
+      const tv = appState.liveTV;
+      const isLiveActive = tv.active === true || tv.active === 1;
+      const embedSrc = isLiveActive ? parseLiveStreamEmbed(tv.platform, tv.url) : null;
 
       return `
-        <section id="live-tv-section" class="mb-10 bg-navyDark rounded-3xl overflow-hidden shadow-xl border-2 border-amber-500/60">
-          <div class="bg-gradient-to-r from-navyDark via-emeraldDeep to-navyDark px-4 sm:px-6 py-3 flex items-center justify-between gap-3 border-b border-amber-500/40">
-            <div class="flex items-center gap-2.5">
-              <span class="bg-liveRed text-white px-3 py-1 rounded-md font-inter font-extrabold text-xs tracking-wider flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-white live-dot"></span>
-                LIVE TV
-              </span>
-              <h2 class="text-white font-extrabold text-base sm:text-xl">${tv.title || 'বঙ্গনূর নিউজ স্টুডিও লাইভ'}</h2>
-            </div>
-            <span class="font-inter text-[11px] font-bold uppercase text-amber-400 bg-black/40 px-2.5 py-1 rounded">
-              ${tv.platform === 'facebook' ? 'Facebook Live' : 'YouTube Live'}
-            </span>
-          </div>
-          <div class="w-full aspect-video bg-black">
-            <iframe src="${embedSrc}" title="${tv.title}" class="w-full h-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-              allowfullscreen></iframe>
-          </div>
-          ${tv.description ? `<div class="px-5 py-3 text-xs sm:text-sm text-slate-300 bg-slate-900">${tv.description}</div>` : ''}
-        </section>
-      `;
-    }
-
-    function renderHomeView() {
-      const list = portalData.articles || [];
-      const hero = list[0];
-      const rest = list.slice(1);
-
-      return `
-        ${hero ? `
-          <section class="mb-10">
-            <article onclick="openArticleById('${hero.id}')" class="bg-white rounded-2xl overflow-hidden shadow-md border border-slate-200 grid grid-cols-1 lg:grid-cols-12 cursor-pointer group">
-              <div class="lg:col-span-7 aspect-video lg:aspect-auto overflow-hidden bg-slate-900">
-                <img src="${hero.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="${hero.title}"
-                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+        <section id="live-tv-section" class="mb-10 bg-gradient-to-b from-slate-950 via-navyDark to-slate-950 rounded-3xl overflow-hidden shadow-2xl border-2 border-amber-500/60">
+          <div class="bg-gradient-to-r from-navyDark via-emeraldDeep to-navyDark px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b-2 border-amber-500/50">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2 bg-liveRed text-white px-3.5 py-1 rounded-md font-inter font-extrabold text-xs tracking-widest shadow-md border border-red-300/40">
+                <span class="w-2.5 h-2.5 rounded-full bg-white live-dot"></span>
+                <span>${isLiveActive && embedSrc ? 'ON AIR • LIVE' : 'LIVE TV'}</span>
               </div>
-              <div class="lg:col-span-5 p-6 flex flex-col justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-amber-500 text-navyDark font-extrabold flex items-center justify-center text-base shadow">ব</div>
                 <div>
-                  <span class="bg-liveRed text-white text-xs font-bold px-3 py-1 rounded-md">প্রধান সংবাদ • ${hero.category}</span>
-                  <h2 class="text-2xl sm:text-3xl font-extrabold text-navyDark group-hover:text-emeraldDeep transition mt-3 leading-snug">${hero.title}</h2>
-                  <p class="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">${hero.summary || ''}</p>
-                </div>
-                <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                  <span class="font-semibold text-emeraldDeep">${hero.author}</span>
-                  <span>${hero.date}</span>
+                  <h2 class="text-white font-extrabold text-lg sm:text-xl leading-none tracking-wide">
+                    <span class="text-amber-400">বঙ্গনূর</span> নিউজ স্টুডিও LIVE TV
+                  </h2>
+                  <span class="font-inter text-[10px] tracking-[0.18em] text-emerald-300 uppercase">BANGANUR 24×7 SATELLITE & DIGITAL NEWS</span>
                 </div>
               </div>
-            </article>
-          </section>
-        ` : ''}
+            </div>
 
-        ${renderLiveTVSection()}
-
-        <section>
-          <div class="flex items-center justify-between border-b-2 border-emeraldDeep pb-2 mb-5">
-            <h2 class="text-xl sm:text-2xl font-extrabold text-navyDark">সর্বশেষ সংবাদ (Latest News)</h2>
+            <div class="flex items-center gap-2 sm:gap-3">
+              <span class="font-inter text-[11px] font-bold uppercase tracking-wider text-amber-300 bg-black/40 border border-amber-500/30 px-2.5 py-1 rounded">
+                ${tv.platform === 'facebook' ? 'Facebook Live' : 'YouTube Live'}
+              </span>
+              <button onclick="toggleTVFullscreen()" class="bg-amber-500 hover:bg-amber-400 text-navyDark font-inter font-extrabold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow">
+                <i class="fa-solid fa-expand"></i>
+                <span>Full Screen</span>
+              </button>
+            </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            ${rest.map(news => `
-              <article onclick="openArticleById('${news.id}')" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md hover:border-emeraldMid transition flex flex-col cursor-pointer group">
-                <div class="aspect-video overflow-hidden bg-slate-100">
-                  <img src="${news.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="${news.title}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                </div>
-                <div class="p-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    <span class="bg-emeraldLight text-emeraldDeep text-xs font-bold px-2.5 py-0.5 rounded">${news.category}</span>
-                    <h3 class="text-lg font-bold text-navyDark group-hover:text-emeraldDeep transition mt-2 leading-snug">${news.title}</h3>
-                    <p class="text-slate-600 text-sm mt-2 line-clamp-2">${news.summary || ''}</p>
-                  </div>
-                  <div class="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                    <span>${news.author}</span>
-                    <span>${news.date}</span>
-                  </div>
-                </div>
-              </article>
-            `).join('')}
+
+          <div id="live-tv-player-container" class="relative w-full aspect-video bg-black overflow-hidden">
+            ${isLiveActive && embedSrc ? `
+              <iframe
+                id="banganur-live-iframe"
+                src="${embedSrc}"
+                title="${tv.title}"
+                class="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                allowfullscreen>
+              </iframe>
+            ` : `
+              <div class="w-full h-full flex flex-col items-center justify-center text-center p-6 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emeraldDeep via-navyDark to-black">
+                <i class="fa-solid fa-tower-broadcast text-4xl text-amber-400 mb-3"></i>
+                <h3 class="text-white text-xl sm:text-3xl font-extrabold">বঙ্গনূর নিউজ স্টুডিও — সরাসরি সম্প্রচার বিরতি</h3>
+                <p class="text-slate-300 text-sm max-w-lg mt-2">পরবর্তী লাইভ সংবাদ বুলেটিন ও বিশেষ আলোচনা শুরু হলেই এখানে সরাসরি সম্প্রচার দেখা যাবে।</p>
+              </div>
+            `}
+          </div>
+
+          <div class="bg-slate-900/95 px-4 sm:px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-3 border-t border-slate-800">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-amber-400">সরাসরি অনুষ্ঠান:</span>
+                <h3 class="text-white font-bold text-base sm:text-lg">${tv.title || 'বঙ্গনূর নিউজ স্টুডিও লাইভ'}</h3>
+              </div>
+              <p class="text-slate-400 text-xs sm:text-sm mt-0.5">${tv.description || ''}</p>
+            </div>
+            ${tv.url ? `
+              <a href="${tv.url}" target="_blank" rel="noopener noreferrer"
+                 class="shrink-0 bg-emeraldMid hover:bg-emerald-600 text-white text-xs font-bold px-3.5 py-1.5 rounded-lg inline-flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <span>মূল চ্যানেলে দেখুন</span>
+              </a>
+            ` : ''}
           </div>
         </section>
       `;
     }
 
-    function renderCategoryView(cat) {
-      const items = (portalData.articles || []).filter(a => a.category === cat);
-      return `
-        <div class="mb-6 flex items-center justify-between bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-          <div>
-            <button onclick="navigateTo('home')" class="text-xs font-bold text-emeraldMid hover:underline mb-1 inline-block">← হোমপেজে ফিরে যান</button>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-navyDark">বিভাগ: ${cat}</h1>
-          </div>
-          <span class="bg-emeraldLight text-emeraldDeep font-bold text-sm px-4 py-1.5 rounded-xl">মোট সংবাদ: ${items.length}টি</span>
-        </div>
-        ${items.length ? `
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            ${items.map(news => `
-              <article onclick="openArticleById('${news.id}')" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col cursor-pointer group">
-                <div class="aspect-video overflow-hidden bg-slate-100">
-                  <img src="${news.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="${news.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                </div>
-                <div class="p-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    <span class="bg-emeraldLight text-emeraldDeep text-xs font-bold px-2.5 py-0.5 rounded">${news.category}</span>
-                    <h3 class="text-lg font-bold text-navyDark group-hover:text-emeraldDeep transition mt-2 leading-snug">${news.title}</h3>
-                    <p class="text-slate-600 text-sm mt-2 line-clamp-2">${news.summary || ''}</p>
-                  </div>
-                  <div class="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                    <span>${news.author}</span>
-                    <span>${news.date}</span>
-                  </div>
-                </div>
-              </article>
-            `).join('')}
-          </div>
-        ` : `<div class="bg-white rounded-2xl p-10 text-center text-slate-500">এই বিভাগে এখনো কোনো সংবাদ প্রকাশিত হয়নি।</div>`}
-      `;
-    }
-
-    function openArticleById(id) {
-      navigateTo('article', id);
-    }
-
-    function renderArticleView(id) {
-      const art = (portalData.articles || []).find(a => a.id === id) || portalData.articles[0];
-      if (!art) return renderHomeView();
-      const paragraphs = (art.content || '').split('\n').filter(p => p.trim());
-      return `
-        <article class="max-w-4xl mx-auto bg-white rounded-2xl p-5 sm:p-8 shadow-sm border border-slate-200">
-          <button onclick="navigateTo('home')" class="text-xs font-bold text-emeraldMid hover:underline mb-4 inline-block">← হোমপেজে ফিরে যান</button>
-          <span class="bg-emeraldLight text-emeraldDeep text-xs font-bold px-3 py-1 rounded">${art.category}</span>
-          <h1 class="text-2xl sm:text-4xl font-extrabold text-navyDark mt-3 leading-tight">${art.title}</h1>
-          ${art.subheadline ? `<p class="text-base sm:text-lg text-emeraldMid font-semibold mt-2">${art.subheadline}</p>` : ''}
-          <div class="mt-4 py-3 border-y border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-            <span>প্রতিবেদক / লেখক: <strong class="text-navyDark">${art.author}</strong></span>
-            <span>${art.date}</span>
-          </div>
-          ${art.image ? `<img src="${art.image}" alt="${art.title}" class="w-full max-h-[450px] object-cover rounded-2xl my-6 border border-slate-200" />` : ''}
-          <div class="space-y-4 text-base sm:text-lg text-slate-800 leading-relaxed">
-            ${paragraphs.map(p => `<p>${p}</p>`).join('')}
-          </div>
-        </article>
-      `;
-    }
-
-    function navigateTo(view, param = null) {
-      currentRoute = { view, param };
-      const select = document.getElementById('category-dropdown');
-      if (select) {
-        select.value = view === 'category' && param ? param : 'সব';
-      }
-      populateCategoryUI();
-      renderView();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function renderView() {
-      const main = document.getElementById('app-main-content');
-      if (!main) return;
-      if (currentRoute.view === 'category') {
-        main.innerHTML = renderCategoryView(currentRoute.param);
-      } else if (currentRoute.view === 'article') {
-        main.innerHTML = renderArticleView(currentRoute.param);
+    function toggleTVFullscreen() {
+      const el = document.getElementById('live-tv-player-container');
+      if (!el) return;
+      if (!document.fullscreenElement) {
+        el.requestFullscreen().catch(() => showToast('আপনার ব্রাউজারে ফুল-স্ক্রিন সমর্থিত নয়', 'info'));
       } else {
-        main.innerHTML = renderHomeView();
+        document.exitFullscreen();
       }
     }
 
     function scrollToLiveTV() {
       if (currentRoute.view !== 'home') {
         navigateTo('home');
-        setTimeout(() => document.getElementById('live-tv-section')?.scrollIntoView({ behavior: 'smooth' }), 150);
+        setTimeout(() => {
+          document.getElementById('live-tv-section')?.scrollIntoView({ behavior: 'smooth' });
+        }, 120);
       } else {
         document.getElementById('live-tv-section')?.scrollIntoView({ behavior: 'smooth' });
       }
     }
 
-    async function loadPortalFromWorker() {
-      if (WORKER_API_URL.includes("YOUR_WORKER_URL")) {
-        renderBreakingTicker();
-        renderView();
+    function formatTo12Hour(time24) {
+      if (!time24) return '--:--';
+      const clean = time24.split(' ')[0];
+      const [hStr, mStr] = clean.split(':');
+      let h = parseInt(hStr, 10);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${String(h).padStart(2, '0')}:${mStr} ${ampm}`;
+    }
+
+    async function fetchKolkataPrayerTimes() {
+      const { method, school } = appState.prayerSettings;
+      const cacheKey = `${new Date().toDateString()}_m${method}_s${school}`;
+      let rawTimings = null;
+      let hijriText = '১ জমাদিউস সানি ১৪৪৮ হিজরি';
+      let isOfflineFallback = false;
+
+      if (prayerCache && prayerCache.key === cacheKey) {
+        rawTimings = prayerCache.timings;
+        hijriText = prayerCache.hijri;
+        isOfflineFallback = prayerCache.offline;
+      } else {
+        try {
+          const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=Kolkata&country=India&method=${method}&school=${school}`);
+          const json = await res.json();
+          if (json.code === 200 && json.data) {
+            rawTimings = json.data.timings;
+            const h = json.data.date.hijri;
+            hijriText = `${h.day} ${h.month.en} ${h.year} AH`;
+            prayerCache = { key: cacheKey, timings: rawTimings, hijri: hijriText, offline: false };
+          } else {
+            throw new Error('Invalid API response');
+          }
+        } catch (err) {
+          isOfflineFallback = true;
+          rawTimings = { Fajr: '04:42', Sunrise: '05:56', Dhuhr: '11:26', Asr: school === 1 ? '15:24' : '14:46', Maghrib: '16:56', Isha: '18:10' };
+          prayerCache = { key: cacheKey, timings: rawTimings, hijri: hijriText, offline: true };
+        }
+      }
+
+      updateNamazWidgetUI(rawTimings, hijriText, isOfflineFallback);
+    }
+
+    function updateNamazWidgetUI(timings, hijriText, isOfflineFallback) {
+      const container = document.getElementById('kolkata-namaz-widget');
+      if (!container) return;
+
+      const prayers = [
+        { key: 'Fajr', bn: 'ফজর', en: 'Fajr', time: timings.Fajr },
+        { key: 'Sunrise', bn: 'সূর্যোদয়', en: 'Sunrise', time: timings.Sunrise },
+        { key: 'Dhuhr', bn: 'যোহর', en: 'Dhuhr', time: timings.Dhuhr },
+        { key: 'Asr', bn: 'আসর', en: 'Asr', time: timings.Asr },
+        { key: 'Maghrib', bn: 'মাগরিব', en: 'Maghrib', time: timings.Maghrib },
+        { key: 'Isha', bn: 'এশা', en: 'Isha', time: timings.Isha }
+      ];
+
+      function computeNextPrayer() {
+        const now = new Date();
+        for (const p of prayers) {
+          if (p.key === 'Sunrise') continue;
+          const [h, m] = p.time.split(':').map(Number);
+          const target = new Date(now);
+          target.setHours(h, m, 0, 0);
+          if (target > now) return { prayer: p, target };
+        }
+        const [fh, fm] = prayers[0].time.split(':').map(Number);
+        const tomorrowFajr = new Date(now);
+        tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
+        tomorrowFajr.setHours(fh, fm, 0, 0);
+        return { prayer: prayers[0], target: tomorrowFajr };
+      }
+
+      const nextInfo = computeNextPrayer();
+
+      container.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-md border border-emerald-200 overflow-hidden">
+          <div class="bg-gradient-to-r from-emeraldDeep to-emeraldMid text-white p-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-mosque text-amber-400 text-lg"></i>
+                <div>
+                  <h3 class="font-bold text-base leading-tight">নামাজের সময়সূচি — কলকাতা</h3>
+                  <p class="font-inter text-[11px] text-emerald-100">Kolkata, West Bengal, India</p>
+                </div>
+              </div>
+              <span class="font-inter text-[10px] px-2 py-0.5 rounded bg-white/15 text-amber-300 font-semibold">
+                ${isOfflineFallback ? 'OFFLINE CALC' : 'LIVE API'}
+              </span>
+            </div>
+            <div class="mt-2.5 pt-2 border-t border-white/15 flex items-center justify-between text-xs text-emerald-100">
+              <span>${appState.settings.bengaliDate}</span>
+              <span class="font-inter text-amber-300 font-medium">${hijriText}</span>
+            </div>
+          </div>
+
+          <div class="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-semibold text-amber-800 block">পরবর্তী ওয়াক্ত</span>
+              <span class="text-sm font-extrabold text-navyDark">${nextInfo.prayer.bn} (${nextInfo.prayer.en})</span>
+            </div>
+            <div class="text-right">
+              <span class="text-[11px] text-slate-500 block font-inter">বাকি সময়</span>
+              <span id="namaz-countdown-timer" class="font-inter font-extrabold text-sm text-emeraldDeep">--:--:--</span>
+            </div>
+          </div>
+
+          <div class="divide-y divide-slate-100">
+            ${prayers.map(p => {
+              const isNext = p.key === nextInfo.prayer.key;
+              return `
+                <div class="px-4 py-2.5 flex items-center justify-between text-sm ${isNext ? 'bg-emeraldLight/90 font-bold text-emeraldDeep border-l-4 border-emeraldMid' : 'text-slate-700'}">
+                  <div class="flex items-center gap-2">
+                    <span>${p.bn}</span>
+                    <span class="font-inter text-xs text-slate-400">(${p.en})</span>
+                  </div>
+                  <span class="font-inter font-bold ${isNext ? 'text-emeraldDeep' : 'text-navyDark'}">${formatTo12Hour(p.time)}</span>
+                </div>`;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      if (prayerCountdownInterval) clearInterval(prayerCountdownInterval);
+      function tickCountdown() {
+        const el = document.getElementById('namaz-countdown-timer');
+        if (!el) return;
+        const diff = nextInfo.target - new Date();
+        if (diff <= 0) {
+          fetchKolkataPrayerTimes();
+          return;
+        }
+        const hrs = Math.floor(diff / 3600000);
+        const mins = Math.floor((diff % 3600000) / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
+        el.textContent = `${String(hrs).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+      }
+      tickCountdown();
+      prayerCountdownInterval = setInterval(tickCountdown, 1000);
+    }
+
+    function getPublishedArticles() {
+      return appState.articles.filter(a => !a.status || a.status === 'published');
+    }
+
+    function getArticleImage(article) {
+      return article.image || createEditorialSVG('emerald', article.category || 'বঙ্গনূর');
+    }
+
+    function renderHomeView() {
+      const published = getPublishedArticles();
+      const hero = published.find(a => a.id === appState.settings.homepage.heroArticleId) || published[0];
+      const trending = published.filter(a => a.id !== hero?.id).slice(0, 4);
+
+      const categorySections = [
+        { title: 'রাজ্য সংবাদ', cat: 'রাজ্য', badgeColor: 'bg-emeraldDeep' },
+        { title: 'জাতীয় সংবাদ (দেশ)', cat: 'দেশ', badgeColor: 'bg-navyDark' },
+        { title: 'আন্তর্জাতিক (বিশ্ব)', cat: 'বিশ্ব', badgeColor: 'bg-teal-800' },
+        { title: 'সাহিত্য ও সংস্কৃতি', cat: 'সাহিত্য', badgeColor: 'bg-indigo-900' },
+        { title: 'ইতিহাস ও ঐতিহ্য', cat: 'ইতিহাস ও ঐতিহ্য', badgeColor: 'bg-amber-800' },
+        { title: 'সম্পাদকীয় কলাম', cat: 'সম্পাদকীয়', badgeColor: 'bg-emeraldMid' },
+        { title: 'অন্যান্য সংবাদ', cat: 'অন্যান্য', badgeColor: 'bg-slate-800' }
+      ];
+
+      return `
+        ${hero ? `
+        <section class="mb-10">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <article onclick="openArticleById('${hero.id}')" class="lg:col-span-7 bg-white rounded-2xl overflow-hidden shadow-md border border-slate-200 group cursor-pointer flex flex-col">
+              <div class="relative aspect-video overflow-hidden bg-slate-900">
+                <img src="${getArticleImage(hero)}" alt="${hero.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                <span class="absolute top-3 left-3 bg-liveRed text-white text-xs font-bold px-3 py-1 rounded-md shadow">
+                  প্রধান সংবাদ • ${hero.category}
+                </span>
+              </div>
+              <div class="p-5 sm:p-6 flex-1 flex flex-col justify-between">
+                <div>
+                  <h2 class="text-2xl sm:text-3xl font-extrabold text-navyDark group-hover:text-emeraldDeep transition leading-snug">
+                    ${hero.title}
+                  </h2>
+                  <p class="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
+                    ${hero.summary || ''}
+                  </p>
+                </div>
+                <div class="mt-5 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+                  <span class="font-semibold text-emeraldDeep"><i class="fa-solid fa-pen-nib mr-1"></i> ${hero.author || 'নিউজ ডেস্ক'}</span>
+                  <span><i class="fa-regular fa-clock mr-1"></i> ${hero.date || ''}</span>
+                </div>
+              </div>
+            </article>
+
+            <div class="lg:col-span-5 flex flex-col justify-between gap-3.5">
+              <div class="flex items-center justify-between border-b-2 border-emeraldDeep pb-1.5">
+                <h3 class="font-extrabold text-lg text-navyDark flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-liveRed"></span>
+                  ট্রেন্ডিং ও শীর্ষ সংবাদ
+                </h3>
+                <span class="font-inter text-xs font-bold text-emeraldMid">TOP STORIES</span>
+              </div>
+              ${trending.map(item => `
+                <article onclick="openArticleById('${item.id}')" class="bg-white rounded-xl p-3 shadow-sm border border-slate-200 hover:border-emeraldMid transition flex gap-3.5 cursor-pointer group">
+                  <img src="${getArticleImage(item)}" alt="${item.title}" class="w-28 h-20 sm:w-32 sm:h-22 rounded-lg object-cover shrink-0 bg-slate-100" />
+                  <div class="flex-1 min-w-0 flex flex-col justify-between">
+                    <div>
+                      <span class="text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded">${item.category}</span>
+                      <h4 class="text-sm sm:text-base font-bold text-navyDark group-hover:text-emeraldDeep transition line-clamp-2 mt-1 leading-snug">
+                        ${item.title}
+                      </h4>
+                    </div>
+                    <span class="text-[11px] text-slate-400 mt-1">${item.date || ''}</span>
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+          </div>
+        </section>
+        ` : ''}
+
+        ${renderLiveTVSection()}
+
+        <section class="mb-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div class="lg:col-span-8 space-y-5">
+            <div class="flex items-center justify-between border-b-2 border-emeraldDeep pb-2">
+              <h2 class="text-xl sm:text-2xl font-extrabold text-navyDark flex items-center gap-2.5">
+                <span class="w-1.5 h-6 bg-amber-500 rounded-full"></span>
+                সর্বশেষ সংবাদ (Latest News)
+              </h2>
+              <button onclick="navigateTo('category', 'সব')" class="text-xs sm:text-sm font-bold text-emeraldDeep hover:text-amber-600 transition">
+                সব দেখুন <i class="fa-solid fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              ${published.slice(0, 6).map(news => `
+                <article onclick="openArticleById('${news.id}')" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md hover:border-emeraldMid transition flex flex-col sm:flex-row gap-4 cursor-pointer group">
+                  <div class="sm:w-52 aspect-video sm:aspect-[16/10] rounded-xl overflow-hidden shrink-0 bg-slate-100">
+                    <img src="${getArticleImage(news)}" alt="${news.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                  </div>
+                  <div class="flex-1 flex flex-col justify-between">
+                    <div>
+                      <div class="flex items-center gap-2 text-xs mb-1.5">
+                        <span class="bg-emeraldLight text-emeraldDeep font-bold px-2.5 py-0.5 rounded">${news.category}</span>
+                        <span class="text-slate-400">• ${news.date || ''}</span>
+                      </div>
+                      <h3 class="text-lg sm:text-xl font-bold text-navyDark group-hover:text-emeraldDeep transition leading-snug">
+                        ${news.title}
+                      </h3>
+                      <p class="text-slate-600 text-sm mt-2 line-clamp-2 leading-relaxed">${news.summary || ''}</p>
+                    </div>
+                    <div class="mt-3 text-xs font-medium text-slate-500">
+                      প্রতিবেদক: <span class="text-navyDark font-semibold">${news.author || 'নিউজ ডেস্ক'}</span>
+                    </div>
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+          </div>
+
+          <aside class="lg:col-span-4 space-y-6">
+            ${appState.settings.homepage.showNamazWidget ? `<div id="kolkata-namaz-widget"></div>` : ''}
+            <div>${renderAdSlot('sidebar')}</div>
+            <div class="bg-gradient-to-br from-navyDark to-emeraldDeep text-white rounded-2xl p-5 shadow-md border border-amber-500/40">
+              <div class="flex items-center justify-between mb-3">
+                <span class="font-inter text-xs font-bold uppercase tracking-wider bg-amber-500 text-navyDark px-2.5 py-0.5 rounded">TODAY'S E-PAPER</span>
+                <i class="fa-regular fa-newspaper text-2xl text-amber-400"></i>
+              </div>
+              <h3 class="text-xl font-bold">আজকের বঙ্গনূর পত্রিকা</h3>
+              <p class="text-xs text-slate-300 mt-1">${appState.epapers[0]?.bengaliDate || ''} • ${appState.epapers[0]?.edition || ''}</p>
+              <div class="mt-4 grid grid-cols-2 gap-2.5">
+                <button onclick="openEPaperReader('${appState.epapers[0]?.id}')" class="bg-white text-emeraldDeep hover:bg-amber-50 font-bold text-xs py-2.5 rounded-xl transition">
+                  অনলাইনে পড়ুন
+                </button>
+                <button onclick="handleCustomLinkOrView('epaper')" class="bg-emeraldMid hover:bg-emerald-600 text-white font-bold text-xs py-2.5 rounded-xl transition">
+                  সব সংখ্যা দেখুন
+                </button>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <div class="mb-10">${renderAdSlot('between-sections')}</div>
+
+        <div class="space-y-10">
+          ${categorySections.map(sec => {
+            const items = published.filter(a => a.category === sec.cat);
+            if (!items.length) return '';
+            return `
+              <section>
+                <div class="flex items-center justify-between border-b-2 border-slate-200 pb-2.5 mb-5">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-3 h-3 rounded-sm ${sec.badgeColor}"></span>
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-navyDark">${sec.title}</h2>
+                  </div>
+                  <button onclick="navigateTo('category', '${sec.cat}')" class="bg-emeraldLight hover:bg-emeraldDeep text-emeraldDeep hover:text-white font-bold text-xs sm:text-sm px-3.5 py-1.5 rounded-lg transition">
+                    VIEW ALL • সব দেখুন
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  ${items.slice(0, 3).map(news => `
+                    <article onclick="openArticleById('${news.id}')" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md hover:border-emeraldMid transition flex flex-col cursor-pointer group">
+                      <div class="aspect-video overflow-hidden bg-slate-100 relative">
+                        <img src="${getArticleImage(news)}" alt="${news.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                        <span class="absolute bottom-2.5 left-2.5 bg-navyDark/85 text-amber-400 text-[11px] font-bold px-2.5 py-0.5 rounded">
+                          ${news.category}
+                        </span>
+                      </div>
+                      <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <h3 class="text-lg font-bold text-navyDark group-hover:text-emeraldDeep transition leading-snug">
+                            ${news.title}
+                          </h3>
+                          <p class="text-slate-600 text-sm mt-2 line-clamp-2">${news.summary || ''}</p>
+                        </div>
+                        <div class="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                          <span>${news.author || 'নিউজ ডেস্ক'}</span>
+                          <span>${news.date || ''}</span>
+                        </div>
+                      </div>
+                    </article>
+                  `).join('')}
+                </div>
+              </section>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderCategoryView(categoryName) {
+      const published = getPublishedArticles();
+      const items = categoryName === 'সব' ? published : published.filter(a => a.category === categoryName);
+
+      return `
+        <div class="mb-6 flex flex-wrap items-center justify-between gap-3 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div>
+            <button onclick="navigateTo('home')" class="text-xs font-bold text-emeraldMid hover:underline mb-1 inline-block">
+              <i class="fa-solid fa-arrow-left mr-1"></i> হোমপেজে ফিরে যান
+            </button>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-navyDark">বিভাগ: ${categoryName}</h1>
+          </div>
+          <span class="bg-emeraldLight text-emeraldDeep font-bold text-sm px-4 py-1.5 rounded-xl">
+            মোট সংবাদ: ${items.length}টি
+          </span>
+        </div>
+
+        ${items.length ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${items.map(news => `
+              <article onclick="openArticleById('${news.id}')" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md hover:border-emeraldMid transition flex flex-col cursor-pointer group">
+                <div class="aspect-video overflow-hidden bg-slate-100">
+                  <img src="${getArticleImage(news)}" alt="${news.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <span class="text-xs font-bold text-emeraldDeep bg-emeraldLight px-2.5 py-0.5 rounded">${news.category}</span>
+                    <h2 class="text-xl font-bold text-navyDark group-hover:text-emeraldDeep transition mt-2 leading-snug">${news.title}</h2>
+                    <p class="text-slate-600 text-sm mt-2.5 line-clamp-3">${news.summary || ''}</p>
+                  </div>
+                  <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span>${news.author || 'নিউজ ডেস্ক'}</span>
+                    <span>${news.date || ''}</span>
+                  </div>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        ` : `
+          <div class="bg-white rounded-2xl p-12 text-center border border-slate-200">
+            <h3 class="text-lg font-bold text-slate-700">এই বিভাগে এখনো কোনো সংবাদ প্রকাশিত হয়নি</h3>
+            <button onclick="navigateTo('home')" class="mt-4 bg-emeraldDeep text-white px-5 py-2 rounded-xl text-sm font-bold">হোমপেজে যান</button>
+          </div>
+        `}
+      `;
+    }
+
+    function openArticleById(articleId) {
+      navigateTo('article', articleId);
+    }
+
+    function renderArticleView(articleId) {
+      const article = appState.articles.find(a => a.id === articleId) || getPublishedArticles()[0];
+      if (!article) return renderHomeView();
+      const related = getPublishedArticles().filter(a => a.id !== article.id).slice(0, 3);
+      const paragraphs = (article.content || '').split('\n').filter(p => p.trim().length > 0);
+
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <article id="printable-article" class="lg:col-span-8 bg-white rounded-2xl p-5 sm:p-8 shadow-sm border border-slate-200">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4 no-print">
+              <div class="flex items-center gap-2 text-xs font-bold">
+                <button onclick="navigateTo('home')" class="text-slate-500 hover:text-emeraldDeep">হোম</button>
+                <span class="text-slate-300">/</span>
+                <button onclick="navigateTo('category', '${article.category}')" class="bg-emeraldLight text-emeraldDeep px-2.5 py-0.5 rounded">${article.category}</button>
+              </div>
+              <button onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-navyDark text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-print"></i> প্রিন্ট করুন
+              </button>
+            </div>
+
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-navyDark leading-tight">${article.title}</h1>
+            ${article.subheadline ? `<p class="text-base sm:text-lg text-emeraldMid font-semibold mt-3 leading-snug">${article.subheadline}</p>` : ''}
+
+            <div class="mt-5 py-3.5 border-y border-slate-200 flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-emeraldDeep text-white font-bold flex items-center justify-center">
+                  ${(article.author || 'ব').charAt(0)}
+                </div>
+                <div>
+                  <div class="text-sm font-bold text-navyDark">${article.author || 'নিউজ ডেস্ক'}</div>
+                  <div class="text-xs text-slate-500">${article.date || ''}</div>
+                </div>
+              </div>
+            </div>
+
+            <figure class="my-6 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
+              <img src="${getArticleImage(article)}" alt="${article.title}" class="w-full max-h-[440px] object-cover" />
+              <figcaption class="px-4 py-2 bg-slate-50 text-xs text-slate-500 border-t border-slate-200">
+                ছবি: বঙ্গনূর ডিজিটাল নিউজ আর্কাইভ • ${article.category}
+              </figcaption>
+            </figure>
+
+            <div class="space-y-4 text-base sm:text-lg text-slate-800 leading-relaxed">
+              ${paragraphs.map(p => `<p>${p}</p>`).join('')}
+            </div>
+
+            <div class="my-8 no-print">${renderAdSlot('article')}</div>
+
+            <div class="mt-8 pt-6 border-t-2 border-slate-200 no-print">
+              <h3 class="text-xl font-extrabold text-navyDark mb-4">আরও পড়ুন (Related News)</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                ${related.map(rel => `
+                  <div onclick="openArticleById('${rel.id}')" class="bg-slate-50 rounded-xl p-3 border border-slate-200 hover:border-emeraldMid cursor-pointer transition">
+                    <img src="${getArticleImage(rel)}" alt="${rel.title}" class="w-full aspect-video rounded-lg object-cover mb-2" />
+                    <span class="text-[10px] font-bold text-emeraldDeep">${rel.category}</span>
+                    <h4 class="text-sm font-bold text-navyDark line-clamp-2 mt-0.5">${rel.title}</h4>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </article>
+
+          <aside class="lg:col-span-4 space-y-6 no-print">
+            <div>${renderAdSlot('sidebar')}</div>
+          </aside>
+        </div>
+      `;
+    }
+
+    function renderEPaperView() {
+      return `
+        <div class="bg-gradient-to-r from-emeraldDeep to-navyDark text-white rounded-2xl p-6 sm:p-8 mb-8 shadow-lg">
+          <span class="font-inter text-xs font-bold tracking-widest uppercase bg-amber-500 text-navyDark px-3 py-1 rounded">DIGITAL NEWSPAPER ARCHIVE</span>
+          <h1 class="text-2xl sm:text-4xl font-extrabold mt-2">বঙ্গনূর ই-পেপার (E-PAPER)</h1>
+          <p class="text-slate-200 text-sm sm:text-base mt-1">কাস্টম ই-পেপার লিংক বর্তমানে <code class="text-amber-300">#</code> সেট করা আছে—নিচে আর্কাইভ সংস্করণ দেখুন।</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${appState.epapers.map(ep => `
+            <div class="bg-white rounded-2xl p-5 shadow-md border border-slate-200 flex flex-col justify-between">
+              <div>
+                <span class="font-inter text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded">${ep.date}</span>
+                <h3 class="text-lg font-extrabold text-navyDark mt-2">${ep.bengaliDate}</h3>
+                <p class="text-xs text-slate-500 mt-0.5">${ep.edition}</p>
+                <p class="text-sm font-bold text-navyDark mt-3">${ep.pages[0]?.headlines[0] || ''}</p>
+              </div>
+              <button onclick="openEPaperReader('${ep.id}')" class="mt-5 bg-emeraldDeep hover:bg-emeraldMid text-white font-bold text-xs py-2.5 rounded-xl transition">
+                অনলাইনে পড়ুন
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function openEPaperReader(epId) {
+      const ep = appState.epapers.find(e => e.id === epId) || appState.epapers[0];
+      if (!ep) return;
+      const page = ep.pages[0];
+      openUniversalModal(`ই-পেপার রিডার — ${ep.bengaliDate}`, `
+        <div class="bg-[#FFFDF7] border-2 border-navyDark rounded-xl p-5 sm:p-7">
+          <h2 class="text-2xl font-extrabold text-emeraldDeep">দৈনিক বঙ্গনূর (BANGANUR)</h2>
+          <p class="text-xs font-semibold text-slate-600 mt-1">${ep.bengaliDate} • ${ep.edition} • সম্পাদক: মুহাম্মাদ আব্দুল মাতিন</p>
+          <h3 class="text-xl font-extrabold text-navyDark mt-4">${page.headlines[0]}</h3>
+          <p class="text-sm sm:text-base text-slate-800 leading-relaxed mt-2">${page.leadBody}</p>
+        </div>
+      `);
+    }
+
+    function renderBooksView() {
+      return `
+        <div class="bg-gradient-to-r from-navyDark via-emeraldDeep to-navyDark text-white rounded-2xl p-6 sm:p-8 mb-8 shadow-lg">
+          <span class="font-inter text-xs font-bold uppercase tracking-widest bg-amber-500 text-navyDark px-3 py-1 rounded">BANGANUR DIGITAL LIBRARY</span>
+          <h1 class="text-2xl sm:text-4xl font-extrabold mt-2">বঙ্গনূর ডিজিটাল বইঘর (PDF BOOK LIBRARY)</h1>
+          <p class="text-slate-200 text-sm sm:text-base mt-1">কাস্টম বইঘর লিংক বর্তমানে <code class="text-amber-300">#</code> সেট করা আছে—নির্বাচিত বইগুলো নিচে দেখুন।</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          ${appState.books.map(book => `
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+              <div>
+                <span class="bg-emeraldLight text-emeraldDeep font-bold text-xs px-2.5 py-0.5 rounded">${book.category}</span>
+                <h3 class="text-xl font-extrabold text-navyDark mt-2">${book.title}</h3>
+                <p class="text-xs font-bold text-amber-700 mt-0.5">লেখক: ${book.author}</p>
+                <p class="text-sm text-slate-600 mt-2.5 leading-relaxed">${book.description}</p>
+              </div>
+              <button onclick="openBookReader('${book.id}')" class="mt-4 bg-emeraldDeep hover:bg-emeraldMid text-white font-bold text-xs py-2.5 rounded-xl transition">
+                পড়ুন
+              </button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function openBookReader(bookId) {
+      const book = appState.books.find(b => b.id === bookId);
+      if (!book) return;
+      openUniversalModal(`ই-বুক রিডার — ${book.title}`, `
+        <div class="bg-[#FFFDF9] border border-slate-200 rounded-xl p-6 text-base leading-relaxed text-slate-800 whitespace-pre-line">
+          ${book.sampleText}
+        </div>
+      `);
+    }
+
+    function toggleSearchModal() {
+      openUniversalModal('বঙ্গনূর সংবাদ অনুসন্ধান (Search)', `
+        <div class="space-y-4">
+          <input id="global-search-input" type="text" oninput="runGlobalSearch(this.value)"
+            placeholder="যেকোনো সংবাদ, বিভাগ বা প্রতিবেদকের নাম লিখুন..."
+            class="w-full px-4 py-3 rounded-xl border-2 border-emeraldMid focus:outline-none text-base" />
+          <div id="global-search-results" class="space-y-3 max-h-96 overflow-y-auto">
+            <p class="text-sm text-slate-500 text-center py-6">উপরের বক্সে লিখলে তাৎক্ষণিক ফলাফল দেখা যাবে।</p>
+          </div>
+        </div>
+      `);
+      setTimeout(() => document.getElementById('global-search-input')?.focus(), 100);
+    }
+
+    function runGlobalSearch(query) {
+      const q = query.trim().toLowerCase();
+      const resBox = document.getElementById('global-search-results');
+      if (!q) {
+        resBox.innerHTML = `<p class="text-sm text-slate-500 text-center py-6">উপরের বক্সে লিখলে তাৎক্ষণিক ফলাফল দেখা যাবে।</p>`;
         return;
       }
+      const matches = getPublishedArticles().filter(a =>
+        (a.title || '').toLowerCase().includes(q) ||
+        (a.summary || '').toLowerCase().includes(q) ||
+        (a.category || '').toLowerCase().includes(q) ||
+        (a.author || '').toLowerCase().includes(q)
+      );
+      if (!matches.length) {
+        resBox.innerHTML = `<p class="text-sm text-slate-500 text-center py-6">দুঃখিত, "${query}" সম্পর্কিত কোনো সংবাদ পাওয়া যায়নি।</p>`;
+        return;
+      }
+      resBox.innerHTML = matches.map(m => `
+        <button onclick="closeUniversalModal(); openArticleById('${m.id}')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-emeraldLight transition flex items-center gap-3">
+          <img src="${getArticleImage(m)}" class="w-16 h-12 rounded-lg object-cover shrink-0" />
+          <div>
+            <span class="text-[10px] font-bold text-emeraldDeep">${m.category}</span>
+            <h4 class="text-sm font-bold text-navyDark line-clamp-1">${m.title}</h4>
+            <span class="text-[11px] text-slate-400">${m.date || ''}</span>
+          </div>
+        </button>
+      `).join('');
+    }
+
+    function openPolicyModal(type) {
+      const policies = {
+        about: {
+          title: 'আমাদের সম্পর্কে — বঙ্গনূর (BANGANUR)',
+          body: 'বঙ্গনূর (BANGANUR) একটি আধুনিক বাংলা ডিজিটাল সংবাদপত্র, সাহিত্য-সংস্কৃতি মাধ্যম এবং লাইভ নিউজ নেটওয়ার্ক।\n\n• সম্পাদক: মুহাম্মাদ আব্দুল মাতিন\n• ম্যানেজার: তরিকুল ইসলাম\n• প্রধান কার্যালয়: বঙ্গনূর ভবন, কাউকেপাড়া, দেগঙ্গা, উত্তর 24 পরগনা, পিন নং 743424\n• যোগাযোগ: 3216 242022 | মোবাইল: 96474 82859 | WhatsApp: 9647109481 | E-mail: banganur@gmail.com'
+        },
+        editorial: {
+          title: 'সম্পাদকীয় নীতিমালা (Editorial Policy)',
+          body: 'সম্পাদক মুহাম্মাদ আব্দুল মাতিন-এর নেতৃত্বে বঙ্গনূর নিউজরুমে প্রকাশিত প্রতিটি সংবাদ একাধিক নির্ভরযোগ্য সূত্র থেকে যাচাই করা হয়। সাম্প্রদায়িক সম্প্রীতি, গণতান্ত্রিক মূল্যবোধ এবং নৈতিক সাংবাদিকতার মানদণ্ড আমরা কঠোরভাবে অনুসরণ করি।'
+        },
+        privacy: {
+          title: 'গোপনীয়তা নীতি (Privacy Policy)',
+          body: 'পাঠকদের ব্যক্তিগত তথ্যের সুরক্ষা আমাদের কাছে সর্বোচ্চ অগ্রাধিকার পায়। আমরা কোনো তৃতীয় পক্ষের কাছে পাঠকদের ব্যক্তিগত ডেটা বিক্রি বা হস্তান্তর করি না।'
+        },
+        terms: {
+          title: 'শর্তাবলী (Terms & Conditions)',
+          body: 'বঙ্গনূর পোর্টালে প্রকাশিত সমস্ত লেখা, ছবি ও ভিডিও কপিরাইট আইন দ্বারা সংরক্ষিত। অনুমতি ব্যতীত বাণিজ্যিক পুনঃপ্রকাশ নিষিদ্ধ।'
+        },
+        ads: {
+          title: 'বিজ্ঞাপন বিভাগ (Advertisement Desk)',
+          body: 'বঙ্গনূর পত্রিকা, ডিজিটাল পোর্টাল, ই-পেপার এবং লাইভ টিভিতে আপনার ব্র্যান্ডের বিজ্ঞাপন দিতে যোগাযোগ করুন:\nম্যানেজার: তরিকুল ইসলাম\nফোন: 3216 242022 | মোবাইল: 96474 82859 | WhatsApp: 9647109481\nE-mail: banganur@gmail.com\nঠিকানা: বঙ্গনূর ভবন, কাউকেপাড়া, দেগঙ্গা, উত্তর 24 পরগনা, পিন নং 743424'
+        }
+      };
+      const item = policies[type] || policies.about;
+      openUniversalModal(item.title, `<p class="text-base leading-relaxed text-slate-700 whitespace-pre-line">${item.body}</p>`);
+    }
+
+    function navigateTo(view, param = null) {
+      currentRoute = { view, param };
+      renderNavigation();
+      renderCurrentView();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderCurrentView() {
+      const container = document.getElementById('app-main-content');
+      if (!container) return;
+      if (currentRoute.view === 'home') {
+        container.innerHTML = renderHomeView();
+        if (appState.settings.homepage.showNamazWidget) {
+          fetchKolkataPrayerTimes();
+        }
+      } else if (currentRoute.view === 'category') {
+        container.innerHTML = renderCategoryView(currentRoute.param);
+      } else if (currentRoute.view === 'article') {
+        container.innerHTML = renderArticleView(currentRoute.param);
+      } else if (currentRoute.view === 'epaper') {
+        container.innerHTML = renderEPaperView();
+      } else if (currentRoute.view === 'books') {
+        container.innerHTML = renderBooksView();
+      }
+    }
+
+    async function loadPortalFromWorker() {
       try {
         const res = await fetch(`${WORKER_API_URL}/api/portal`);
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data.articles) && data.articles.length) portalData.articles = data.articles;
-          if (Array.isArray(data.breakingNews)) portalData.breakingNews = data.breakingNews;
-          if (data.liveTV) portalData.liveTV = data.liveTV;
+          if (Array.isArray(data.articles) && data.articles.length) {
+            appState.articles = data.articles;
+            appState.settings.homepage.heroArticleId = data.articles[0].id;
+          }
+          if (Array.isArray(data.breakingNews) && data.breakingNews.length) {
+            appState.breakingNews = data.breakingNews;
+          }
+          if (data.liveTV) {
+            appState.liveTV = {
+              ...appState.liveTV,
+              ...data.liveTV,
+              active: Boolean(data.liveTV.active)
+            };
+          }
         }
       } catch (e) {
-        console.warn("Worker fetch fallback:", e);
+        console.warn('Worker API fallback in use:', e);
       }
       renderBreakingTicker();
-      renderView();
+      renderCurrentView();
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      setDates();
-      populateCategoryUI();
+    window.addEventListener('DOMContentLoaded', () => {
+      updateHeaderMeta();
+      renderNavigation();
       renderBreakingTicker();
-      renderView();
+      refreshStaticAdSlots();
+      renderCurrentView();
       loadPortalFromWorker();
     });
   </script>
