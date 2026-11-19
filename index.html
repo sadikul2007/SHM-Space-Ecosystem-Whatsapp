@@ -3,156 +3,478 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHMspace WhatsApp Marketing Panel</title>
+  <title>BANGANUR (বঙ্গনূর) | Bengali Digital News Portal & Live TV</title>
+  <meta name="description" content="বঙ্গনূর (BANGANUR) - পশ্চিমবঙ্গ, ভারত ও বিশ্বের সর্বশেষ সংবাদ, লাইভ টিভি, সাহিত্য, ইতিহাস ও ঐতিহ্যের নির্ভরযোগ্য ডিজিটাল সংবাদ মাধ্যম।" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emeraldDeep: '#064E3B',
+            emeraldMid: '#047857',
+            emeraldLight: '#ECFDF5',
+            navyDark: '#0F172A',
+            goldAccent: '#D97706',
+            liveRed: '#DC2626',
+            paperBg: '#F8FAFC'
+          },
+          fontFamily: {
+            bengali: ['"Hind Siliguri"', '"Noto Sans Bengali"', 'sans-serif'],
+            sans: ['"Inter"', '"Hind Siliguri"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
   <style>
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #070b14;
-      color: #f1f5f9;
+      font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+      background-color: #F8FAFC;
+      color: #0F172A;
+      overflow-x: hidden;
+    }
+    @keyframes tickerScroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-track {
       display: flex;
-      justify-content: center;
-      padding: 24px 14px;
+      width: max-content;
+      animation: tickerScroll 40s linear infinite;
     }
-    .panel {
-      width: 100%;
-      max-width: 540px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+    .ticker-track:hover {
+      animation-play-state: paused;
     }
-    h2 { margin: 0 0 14px; color: #38bdf8; }
-    label { display: block; margin: 12px 0 6px; font-size: 13px; color: #cbd5e1; }
-    input, textarea, button {
-      width: 100%;
-      box-sizing: border-box;
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      background: #0b1220;
-      color: #fff;
-      padding: 11px 12px;
-      font-size: 14px;
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(1.25); }
     }
-    .row { display: flex; gap: 10px; }
-    .row > div { flex: 1; }
-    button {
-      margin-top: 16px;
-      background: linear-gradient(135deg, #0ea5e9, #2563eb);
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    #log {
-      margin-top: 16px;
-      font-size: 12.5px;
-      white-space: pre-wrap;
-      background: #050811;
-      border: 1px solid rgba(148, 163, 184, 0.16);
-      border-radius: 10px;
-      padding: 12px;
-      color: #94a3b8;
-      max-height: 260px;
-      overflow-y: auto;
+    .live-dot {
+      animation: livePulse 1.3s infinite ease-in-out;
     }
   </style>
 </head>
-<body>
-  <div class="panel">
-    <h2>SHMspace WhatsApp Sender</h2>
-
-    <label for="panelKey">প্যানেল পিন / কী (Cloudflare ADMIN_KEY)</label>
-    <input id="panelKey" type="password" placeholder="আপনার সিক্রেট পিন লিখুন" />
-
-    <label for="phones">প্রাপকের নম্বরসমূহ (দেশের কোডসহ, '+' ছাড়া — কমা বা নতুন লাইনে একাধিক দিন)</label>
-    <textarea id="phones" rows="3" placeholder="919064373386&#10;919836375778"></textarea>
-
-    <label for="msg">মেসেজ বা Template নাম</label>
-    <textarea id="msg" rows="3" placeholder="Template নাম (যেমন: shmspace_offer_bn) বা সাধারণ মেসেজ লিখুন"></textarea>
-
-    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-      <input id="isTemplate" type="checkbox" style="width:auto; margin:0;" />
-      Template হিসেবে পাঠান
-    </label>
-
-    <div class="row" id="templateOptions">
-      <div>
-        <label for="langCode">Language Code</label>
-        <input id="langCode" type="text" value="bn" placeholder="bn বা en_US" />
-      </div>
-      <div>
-        <label for="varsInput">ভেরিয়েবলসমূহ ({{1}}, {{2}} — কমা দিয়ে)</label>
-        <input id="varsInput" type="text" placeholder="সাদিকুল, কাজ সম্পন্ন" />
+<body class="antialiased selection:bg-emeraldDeep selection:text-white">
+  <div id="public-portal" class="min-h-screen flex flex-col">
+    <!-- Top Bar -->
+    <div class="bg-navyDark text-slate-200 text-xs sm:text-sm border-b border-slate-800">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="flex items-center gap-1.5 text-amber-400 font-medium">
+            <i class="fa-regular fa-calendar-days"></i>
+            <span id="bengali-date-display">অগ্রহায়ণ ১৪৩৩ বঙ্গাব্দ</span>
+          </span>
+          <span class="hidden md:inline text-slate-500">|</span>
+          <span id="english-date-display" class="hidden md:inline font-inter text-slate-300"></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="https://facebook.com" target="_blank" rel="noopener" class="hover:text-amber-400 transition"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://youtube.com" target="_blank" rel="noopener" class="hover:text-red-400 transition"><i class="fa-brands fa-youtube"></i></a>
+          <a href="https://wa.me/919647109481" target="_blank" rel="noopener" class="hover:text-emerald-400 transition"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
       </div>
     </div>
 
-    <button id="sendBtn" type="button">Send Message(s)</button>
-    <div id="log">রেজাল্ট লগ এখানে দেখা যাবে...</div>
+    <!-- Masthead -->
+    <header class="bg-white border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <button onclick="navigateTo('home')" class="flex items-center gap-3 text-left group focus:outline-none">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emeraldDeep via-emeraldMid to-navyDark flex items-center justify-center shadow-md border-2 border-amber-500/70 text-white font-extrabold text-2xl">
+            ব
+          </div>
+          <div>
+            <div class="flex items-baseline gap-2">
+              <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-emeraldDeep leading-none">বঙ্গনূর</h1>
+              <span class="font-inter text-lg sm:text-xl font-extrabold tracking-wider text-navyDark">BANGANUR</span>
+            </div>
+            <p class="font-inter text-[10px] sm:text-xs font-bold tracking-[0.2em] text-amber-700 uppercase mt-1">
+              BENGALI DIGITAL NEWS PORTAL
+            </p>
+          </div>
+        </button>
+
+        <!-- Category Dropdown Filter -->
+        <div class="w-full sm:w-auto flex items-center gap-2">
+          <label for="category-dropdown" class="text-xs font-bold text-slate-600 shrink-0">বিভাগ বাছুন:</label>
+          <select id="category-dropdown" onchange="onCategoryDropdownChange(this.value)"
+            class="w-full sm:w-52 px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-navyDark text-sm font-bold focus:border-emeraldMid focus:outline-none">
+            <option value="সব">সব সংবাদ (All)</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sticky Navigation -->
+    <nav class="sticky top-0 z-40 bg-emeraldDeep text-white shadow-md border-b-2 border-amber-500">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 flex items-center justify-between gap-2 overflow-x-auto">
+        <ul id="main-nav-list" class="flex items-center space-x-1 py-1 text-sm sm:text-base font-semibold whitespace-nowrap"></ul>
+        <button onclick="scrollToLiveTV()" class="shrink-0 my-1.5 bg-liveRed hover:bg-red-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-inter font-bold tracking-wide flex items-center gap-2 shadow transition">
+          <span class="w-2 h-2 rounded-full bg-white live-dot"></span>
+          LIVE TV
+        </button>
+      </div>
+    </nav>
+
+    <!-- Breaking News Ticker -->
+    <div class="bg-white border-b border-slate-200 shadow-sm">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center gap-3 overflow-hidden">
+        <div class="shrink-0 bg-liveRed text-white px-3 py-1 rounded-md font-inter font-extrabold text-xs tracking-wider flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-white live-dot"></span>
+          <span>BREAKING NEWS</span>
+        </div>
+        <div class="relative flex-1 overflow-hidden">
+          <div id="breaking-ticker-track" class="ticker-track gap-8 text-sm font-semibold text-navyDark"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="app-main-content" class="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-6">
+      <div class="text-center py-12 text-slate-500 font-semibold">সংবাদ লোড হচ্ছে...</div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-navyDark text-slate-300 border-t-4 border-emeraldMid mt-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <p>© ২০২৬ <span class="text-white font-semibold">বঙ্গনূর (BANGANUR)</span>। সর্বস্বত্ব সংরক্ষিত।</p>
+        <p>সম্পাদক: <span class="text-amber-400 font-semibold">মুহাম্মাদ আব্দুল মাতিন</span> | ম্যানেজার: <span class="text-emerald-400 font-semibold">তরিকুল ইসলাম</span></p>
+      </div>
+    </footer>
   </div>
 
   <script>
-    const WORKER_URL = "https://shmspace.sadikul2007.workers.dev";
+    // আপনার Cloudflare Worker-এর URL এখানে দিন
+    const WORKER_API_URL = "https://banganur-api.sadikul2007.workers.dev";
 
-    const keyInput = document.getElementById("panelKey");
-    keyInput.value = sessionStorage.getItem("shm_wa_pin") || "";
-    keyInput.addEventListener("input", () => {
-      sessionStorage.setItem("shm_wa_pin", keyInput.value);
-    });
+    const CATEGORIES = ['রাজ্য', 'দেশ', 'বিশ্ব', 'সাহিত্য', 'ইতিহাস ও ঐতিহ্য', 'সম্পাদকীয়', 'অন্যান্য'];
 
-    document.getElementById("sendBtn").addEventListener("click", async () => {
-      const btn = document.getElementById("sendBtn");
-      const logEl = document.getElementById("log");
-      const pin = keyInput.value.trim();
-      const rawPhones = document.getElementById("phones").value;
-      const content = document.getElementById("msg").value.trim();
-      const isTemplate = document.getElementById("isTemplate").checked;
-      const templateLang = document.getElementById("langCode").value.trim() || "bn";
-      const variables = document
-        .getElementById("varsInput")
-        .value.split(",")
-        .map((v) => v.trim())
-        .filter(Boolean);
+    const FALLBACK_ARTICLES = [
+      {
+        id: 'news-1',
+        title: 'উত্তুরে হাওয়ার দাপটে কলকাতা ও উত্তর ২৪ পরগনাসহ দক্ষিণবঙ্গে শীতের আমেজ',
+        subheadline: 'আগামী কয়েক দিনে রাতের তাপমাত্রা আরও কমার পূর্বাভাস',
+        category: 'রাজ্য',
+        author: 'মুহাম্মাদ আব্দুল মাতিন',
+        date: 'নভেম্বর ২০২৬',
+        image: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80',
+        summary: 'দক্ষিণবঙ্গে শীতের আমেজ শুরু হয়েছে। ভোরের দিকে হালকা কুয়াশা ও মনোরম আবহাওয়া বিরাজ করছে।',
+        content: 'কলকাতা ও উত্তর ২৪ পরগনাসহ দক্ষিণবঙ্গের বিভিন্ন জেলায় শীতের আমেজ অনুভূত হচ্ছে। আবহাওয়া দপ্তর জানিয়েছে, আগামী কয়েকদিন শুষ্ক আবহাওয়া থাকবে।'
+      }
+    ];
 
-      const phoneList = rawPhones
-        .split(/[\s,;\n]+/)
-        .map((p) => p.replace(/\D/g, ""))
-        .filter(Boolean);
+    let portalData = {
+      articles: FALLBACK_ARTICLES,
+      breakingNews: [
+        { id: 'bn-1', text: 'বঙ্গনূর ডিজিটাল নিউজ পোর্টালে আপনাকে স্বাগতম — সত্য ও নিরপেক্ষ সংবাদের বিশ্বস্ত মাধ্যম', article_id: 'news-1' }
+      ],
+      liveTV: {
+        active: 1,
+        platform: 'youtube',
+        url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk',
+        title: 'বঙ্গনূর নিউজ স্টুডিও লাইভ',
+        description: 'সরাসরি সম্প্রচার'
+      }
+    };
 
-      if (phoneList.length === 0 || !content) {
-        logEl.textContent = "অন্তত একটি সঠিক নম্বর এবং মেসেজ/Template নাম দিন।";
+    let currentRoute = { view: 'home', param: null };
+
+    function setDates() {
+      const enEl = document.getElementById('english-date-display');
+      if (enEl) {
+        enEl.textContent = new Date().toLocaleDateString('en-US', {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+      }
+    }
+
+    function populateCategoryUI() {
+      const select = document.getElementById('category-dropdown');
+      if (select) {
+        select.innerHTML = `<option value="সব">সব সংবাদ (All)</option>` +
+          CATEGORIES.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+      }
+
+      const navList = document.getElementById('main-nav-list');
+      if (navList) {
+        const items = [{ label: 'হোম', view: 'home', param: null }, ...CATEGORIES.map(c => ({ label: c, view: 'category', param: c }))];
+        navList.innerHTML = items.map(item => {
+          const active = (item.view === 'home' && currentRoute.view === 'home') ||
+            (item.view === 'category' && currentRoute.view === 'category' && currentRoute.param === item.param);
+          return `<li>
+            <button onclick="navigateTo('${item.view}', ${item.param ? `'${item.param}'` : 'null'})"
+              class="px-3 py-2 rounded-lg transition ${active ? 'bg-amber-500 text-navyDark font-extrabold' : 'hover:bg-emeraldMid text-white'}">
+              ${item.label}
+            </button>
+          </li>`;
+        }).join('');
+      }
+    }
+
+    function onCategoryDropdownChange(val) {
+      if (val === 'সব') {
+        navigateTo('home');
+      } else {
+        navigateTo('category', val);
+      }
+    }
+
+    function renderBreakingTicker() {
+      const track = document.getElementById('breaking-ticker-track');
+      if (!track) return;
+      const items = portalData.breakingNews || [];
+      if (!items.length) {
+        track.innerHTML = `<span>বঙ্গনূর ডিজিটাল নিউজ পোর্টালে আপনাকে স্বাগতম।</span>`;
         return;
       }
+      const doubled = [...items, ...items];
+      track.innerHTML = doubled.map(b => `
+        <button onclick="${b.article_id ? `openArticleById('${b.article_id}')` : ''}" class="inline-flex items-center gap-2 hover:text-liveRed transition whitespace-nowrap">
+          <span class="text-liveRed">●</span>
+          <span>${b.text}</span>
+        </button>
+      `).join('');
+    }
 
-      btn.disabled = true;
-      logEl.textContent = `মোট ${phoneList.length}টি নম্বরে পাঠানো শুরু হচ্ছে...\n`;
-
-      for (const to of phoneList) {
-        const body = isTemplate
-          ? { to, templateName: content, templateLang, variables }
-          : { to, message: content };
-
-        try {
-          const res = await fetch(WORKER_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-panel-key": pin,
-            },
-            body: JSON.stringify(body),
-          });
-          const data = await res.json();
-          logEl.textContent += `\n[${to}] -> ${JSON.stringify(data)}\n`;
-        } catch (err) {
-          logEl.textContent += `\n[${to}] -> Error: ${err.message}\n`;
+    function parseLiveStreamEmbed(platform, rawInput) {
+      if (!rawInput) return null;
+      const url = rawInput.trim();
+      if (platform === 'youtube') {
+        const patterns = [
+          /[?&]v=([a-zA-Z0-9_-]{11})/,
+          /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+          /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/,
+          /youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/
+        ];
+        for (const p of patterns) {
+          const m = url.match(p);
+          if (m && m[1]) {
+            return `https://www.youtube.com/embed/${m[1]}?autoplay=1&mute=1&rel=0&playsinline=1`;
+          }
         }
-
-        // Rate limit এড়াতে নম্বরের মাঝে সামান্য বিরতি
-        await new Promise((r) => setTimeout(r, 400));
+        return null;
       }
+      if (platform === 'facebook') {
+        if (!url.includes('facebook.com') && !url.includes('fb.watch')) return null;
+        return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=true&mute=true&width=1280`;
+      }
+      return null;
+    }
 
-      btn.disabled = false;
+    function renderLiveTVSection() {
+      const tv = portalData.liveTV;
+      if (!tv || !tv.active) return '';
+      const embedSrc = parseLiveStreamEmbed(tv.platform, tv.url);
+      if (!embedSrc) return '';
+
+      return `
+        <section id="live-tv-section" class="mb-10 bg-navyDark rounded-3xl overflow-hidden shadow-xl border-2 border-amber-500/60">
+          <div class="bg-gradient-to-r from-navyDark via-emeraldDeep to-navyDark px-4 sm:px-6 py-3 flex items-center justify-between gap-3 border-b border-amber-500/40">
+            <div class="flex items-center gap-2.5">
+              <span class="bg-liveRed text-white px-3 py-1 rounded-md font-inter font-extrabold text-xs tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-white live-dot"></span>
+                LIVE TV
+              </span>
+              <h2 class="text-white font-extrabold text-base sm:text-xl">${tv.title || 'বঙ্গনূর নিউজ স্টুডিও লাইভ'}</h2>
+            </div>
+            <span class="font-inter text-[11px] font-bold uppercase text-amber-400 bg-black/40 px-2.5 py-1 rounded">
+              ${tv.platform === 'facebook' ? 'Facebook Live' : 'YouTube Live'}
+            </span>
+          </div>
+          <div class="w-full aspect-video bg-black">
+            <iframe src="${embedSrc}" title="${tv.title}" class="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allowfullscreen></iframe>
+          </div>
+          ${tv.description ? `<div class="px-5 py-3 text-xs sm:text-sm text-slate-300 bg-slate-900">${tv.description}</div>` : ''}
+        </section>
+      `;
+    }
+
+    function renderHomeView() {
+      const list = portalData.articles || [];
+      const hero = list[0];
+      const rest = list.slice(1);
+
+      return `
+        ${hero ? `
+          <section class="mb-10">
+            <article onclick="openArticleById('${hero.id}')" class="bg-white rounded-2xl overflow-hidden shadow-md border border-slate-200 grid grid-cols-1 lg:grid-cols-12 cursor-pointer group">
+              <div class="lg:col-span-7 aspect-video lg:aspect-auto overflow-hidden bg-slate-900">
+                <img src="${hero.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="${hero.title}"
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              </div>
+              <div class="lg:col-span-5 p-6 flex flex-col justify-between">
+                <div>
+                  <span class="bg-liveRed text-white text-xs font-bold px-3 py-1 rounded-md">প্রধান সংবাদ • ${hero.category}</span>
+                  <h2 class="text-2xl sm:text-3xl font-extrabold text-navyDark group-hover:text-emeraldDeep transition mt-3 leading-snug">${hero.title}</h2>
+                  <p class="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">${hero.summary || ''}</p>
+                </div>
+                <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                  <span class="font-semibold text-emeraldDeep">${hero.author}</span>
+                  <span>${hero.date}</span>
+                </div>
+              </div>
+            </article>
+          </section>
+        ` : ''}
+
+        ${renderLiveTVSection()}
+
+        <section>
+          <div class="flex items-center justify-between border-b-2 border-emeraldDeep pb-2 mb-5">
+            <h2 class="text-xl sm:text-2xl font-extrabold text-navyDark">সর্বশেষ সংবাদ (Latest News)</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${rest.map(news => `
+              <article onclick="openArticleById('${news.id}')" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md hover:border-emeraldMid transition flex flex-col cursor-pointer group">
+                <div class="aspect-video overflow-hidden bg-slate-100">
+                  <img src="${news.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="${news.title}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <span class="bg-emeraldLight text-emeraldDeep text-xs font-bold px-2.5 py-0.5 rounded">${news.category}</span>
+                    <h3 class="text-lg font-bold text-navyDark group-hover:text-emeraldDeep transition mt-2 leading-snug">${news.title}</h3>
+                    <p class="text-slate-600 text-sm mt-2 line-clamp-2">${news.summary || ''}</p>
+                  </div>
+                  <div class="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span>${news.author}</span>
+                    <span>${news.date}</span>
+                  </div>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderCategoryView(cat) {
+      const items = (portalData.articles || []).filter(a => a.category === cat);
+      return `
+        <div class="mb-6 flex items-center justify-between bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div>
+            <button onclick="navigateTo('home')" class="text-xs font-bold text-emeraldMid hover:underline mb-1 inline-block">← হোমপেজে ফিরে যান</button>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-navyDark">বিভাগ: ${cat}</h1>
+          </div>
+          <span class="bg-emeraldLight text-emeraldDeep font-bold text-sm px-4 py-1.5 rounded-xl">মোট সংবাদ: ${items.length}টি</span>
+        </div>
+        ${items.length ? `
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${items.map(news => `
+              <article onclick="openArticleById('${news.id}')" class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col cursor-pointer group">
+                <div class="aspect-video overflow-hidden bg-slate-100">
+                  <img src="${news.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="${news.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between">
+                  <div>
+                    <span class="bg-emeraldLight text-emeraldDeep text-xs font-bold px-2.5 py-0.5 rounded">${news.category}</span>
+                    <h3 class="text-lg font-bold text-navyDark group-hover:text-emeraldDeep transition mt-2 leading-snug">${news.title}</h3>
+                    <p class="text-slate-600 text-sm mt-2 line-clamp-2">${news.summary || ''}</p>
+                  </div>
+                  <div class="mt-4 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span>${news.author}</span>
+                    <span>${news.date}</span>
+                  </div>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        ` : `<div class="bg-white rounded-2xl p-10 text-center text-slate-500">এই বিভাগে এখনো কোনো সংবাদ প্রকাশিত হয়নি।</div>`}
+      `;
+    }
+
+    function openArticleById(id) {
+      navigateTo('article', id);
+    }
+
+    function renderArticleView(id) {
+      const art = (portalData.articles || []).find(a => a.id === id) || portalData.articles[0];
+      if (!art) return renderHomeView();
+      const paragraphs = (art.content || '').split('\n').filter(p => p.trim());
+      return `
+        <article class="max-w-4xl mx-auto bg-white rounded-2xl p-5 sm:p-8 shadow-sm border border-slate-200">
+          <button onclick="navigateTo('home')" class="text-xs font-bold text-emeraldMid hover:underline mb-4 inline-block">← হোমপেজে ফিরে যান</button>
+          <span class="bg-emeraldLight text-emeraldDeep text-xs font-bold px-3 py-1 rounded">${art.category}</span>
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-navyDark mt-3 leading-tight">${art.title}</h1>
+          ${art.subheadline ? `<p class="text-base sm:text-lg text-emeraldMid font-semibold mt-2">${art.subheadline}</p>` : ''}
+          <div class="mt-4 py-3 border-y border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+            <span>প্রতিবেদক / লেখক: <strong class="text-navyDark">${art.author}</strong></span>
+            <span>${art.date}</span>
+          </div>
+          ${art.image ? `<img src="${art.image}" alt="${art.title}" class="w-full max-h-[450px] object-cover rounded-2xl my-6 border border-slate-200" />` : ''}
+          <div class="space-y-4 text-base sm:text-lg text-slate-800 leading-relaxed">
+            ${paragraphs.map(p => `<p>${p}</p>`).join('')}
+          </div>
+        </article>
+      `;
+    }
+
+    function navigateTo(view, param = null) {
+      currentRoute = { view, param };
+      const select = document.getElementById('category-dropdown');
+      if (select) {
+        select.value = view === 'category' && param ? param : 'সব';
+      }
+      populateCategoryUI();
+      renderView();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderView() {
+      const main = document.getElementById('app-main-content');
+      if (!main) return;
+      if (currentRoute.view === 'category') {
+        main.innerHTML = renderCategoryView(currentRoute.param);
+      } else if (currentRoute.view === 'article') {
+        main.innerHTML = renderArticleView(currentRoute.param);
+      } else {
+        main.innerHTML = renderHomeView();
+      }
+    }
+
+    function scrollToLiveTV() {
+      if (currentRoute.view !== 'home') {
+        navigateTo('home');
+        setTimeout(() => document.getElementById('live-tv-section')?.scrollIntoView({ behavior: 'smooth' }), 150);
+      } else {
+        document.getElementById('live-tv-section')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    async function loadPortalFromWorker() {
+      if (WORKER_API_URL.includes("YOUR_WORKER_URL")) {
+        renderBreakingTicker();
+        renderView();
+        return;
+      }
+      try {
+        const res = await fetch(`${WORKER_API_URL}/api/portal`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.articles) && data.articles.length) portalData.articles = data.articles;
+          if (Array.isArray(data.breakingNews)) portalData.breakingNews = data.breakingNews;
+          if (data.liveTV) portalData.liveTV = data.liveTV;
+        }
+      } catch (e) {
+        console.warn("Worker fetch fallback:", e);
+      }
+      renderBreakingTicker();
+      renderView();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      setDates();
+      populateCategoryUI();
+      renderBreakingTicker();
+      renderView();
+      loadPortalFromWorker();
     });
   </script>
 </body>
