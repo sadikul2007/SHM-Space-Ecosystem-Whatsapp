@@ -12,21 +12,19 @@
       color: #f1f5f9;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
+      padding: 24px 14px;
     }
     .panel {
       width: 100%;
-      max-width: 480px;
-      background: rgba(15, 23, 42, 0.85);
+      max-width: 540px;
+      background: rgba(15, 23, 42, 0.9);
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 16px;
       padding: 24px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
     }
-    h2 { margin-top: 0; color: #38bdf8; }
-    label { display: block; margin: 12px 0 6px; font-size: 14px; color: #cbd5e1; }
+    h2 { margin: 0 0 14px; color: #38bdf8; }
+    label { display: block; margin: 12px 0 6px; font-size: 13px; color: #cbd5e1; }
     input, textarea, button {
       width: 100%;
       box-sizing: border-box;
@@ -34,70 +32,127 @@
       border: 1px solid rgba(148, 163, 184, 0.25);
       background: #0b1220;
       color: #fff;
-      padding: 12px;
+      padding: 11px 12px;
       font-size: 14px;
     }
+    .row { display: flex; gap: 10px; }
+    .row > div { flex: 1; }
     button {
-      margin-top: 18px;
+      margin-top: 16px;
       background: linear-gradient(135deg, #0ea5e9, #2563eb);
       border: none;
       font-weight: 600;
       cursor: pointer;
     }
-    #status {
-      margin-top: 14px;
-      font-size: 13px;
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    #log {
+      margin-top: 16px;
+      font-size: 12.5px;
       white-space: pre-wrap;
+      background: #050811;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 10px;
+      padding: 12px;
       color: #94a3b8;
+      max-height: 260px;
+      overflow-y: auto;
     }
   </style>
 </head>
 <body>
   <div class="panel">
-    <h2>WhatsApp Sender Panel</h2>
-    <label for="phone">প্রাপকের নম্বর (দেশের কোডসহ, '+' ছাড়া)</label>
-    <input id="phone" type="text" placeholder="919064373386" required />
+    <h2>SHMspace WhatsApp Sender</h2>
+
+    <label for="panelKey">প্যানেল পিন / কী (Cloudflare ADMIN_KEY)</label>
+    <input id="panelKey" type="password" placeholder="আপনার সিক্রেট পিন লিখুন" />
+
+    <label for="phones">প্রাপকের নম্বরসমূহ (দেশের কোডসহ, '+' ছাড়া — কমা বা নতুন লাইনে একাধিক দিন)</label>
+    <textarea id="phones" rows="3" placeholder="919064373386&#10;919836375778"></textarea>
 
     <label for="msg">মেসেজ বা Template নাম</label>
-    <textarea id="msg" rows="4" placeholder="Hello! SHMspace থেকে মেসেজ পাঠানো হচ্ছে..." required></textarea>
+    <textarea id="msg" rows="3" placeholder="Template নাম (যেমন: shmspace_offer_bn) বা সাধারণ মেসেজ লিখুন"></textarea>
 
-    <label>
-      <input id="isTemplate" type="checkbox" style="width:auto; margin-right:8px;" />
-      Template হিসেবে পাঠান (যেমন: hello_world)
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+      <input id="isTemplate" type="checkbox" style="width:auto; margin:0;" />
+      Template হিসেবে পাঠান
     </label>
 
-    <button id="sendBtn" type="button">Send WhatsApp Message</button>
-    <div id="status"></div>
+    <div class="row" id="templateOptions">
+      <div>
+        <label for="langCode">Language Code</label>
+        <input id="langCode" type="text" value="bn" placeholder="bn বা en_US" />
+      </div>
+      <div>
+        <label for="varsInput">ভেরিয়েবলসমূহ ({{1}}, {{2}} — কমা দিয়ে)</label>
+        <input id="varsInput" type="text" placeholder="সাদিকুল, কাজ সম্পন্ন" />
+      </div>
+    </div>
+
+    <button id="sendBtn" type="button">Send Message(s)</button>
+    <div id="log">রেজাল্ট লগ এখানে দেখা যাবে...</div>
   </div>
 
   <script>
-    const WORKER_URL = "https://shmspace.sadikul2007.workers.dev";
+    const WORKER_URL = "https://your-worker-name.your-subdomain.workers.dev";
+
+    const keyInput = document.getElementById("panelKey");
+    keyInput.value = sessionStorage.getItem("shm_wa_pin") || "";
+    keyInput.addEventListener("input", () => {
+      sessionStorage.setItem("shm_wa_pin", keyInput.value);
+    });
 
     document.getElementById("sendBtn").addEventListener("click", async () => {
-      const to = document.getElementById("phone").value.trim();
-      const textVal = document.getElementById("msg").value.trim();
+      const btn = document.getElementById("sendBtn");
+      const logEl = document.getElementById("log");
+      const pin = keyInput.value.trim();
+      const rawPhones = document.getElementById("phones").value;
+      const content = document.getElementById("msg").value.trim();
       const isTemplate = document.getElementById("isTemplate").checked;
-      const statusEl = document.getElementById("status");
+      const templateLang = document.getElementById("langCode").value.trim() || "bn";
+      const variables = document
+        .getElementById("varsInput")
+        .value.split(",")
+        .map((v) => v.trim())
+        .filter(Boolean);
 
-      if (!to || !textVal) {
-        statusEl.textContent = "নম্বর এবং মেসেজ/টেমপ্লেট দুটোই দিন।";
+      const phoneList = rawPhones
+        .split(/[\s,;\n]+/)
+        .map((p) => p.replace(/\D/g, ""))
+        .filter(Boolean);
+
+      if (phoneList.length === 0 || !content) {
+        logEl.textContent = "অন্তত একটি সঠিক নম্বর এবং মেসেজ/Template নাম দিন।";
         return;
       }
 
-      statusEl.textContent = "পাঠানো হচ্ছে...";
-      const payload = isTemplate ? { to, templateName: textVal } : { to, message: textVal };
+      btn.disabled = true;
+      logEl.textContent = `মোট ${phoneList.length}টি নম্বরে পাঠানো শুরু হচ্ছে...\n`;
 
-      try {
-        const res = await fetch(WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        const data = await res.json();
-        statusEl.textContent = JSON.stringify(data, null, 2);
-      } catch (err) {
-        statusEl.textContent = "Error: " + err.message;
+      for (const to of phoneList) {
+        const body = isTemplate
+          ? { to, templateName: content, templateLang, variables }
+          : { to, message: content };
+
+        try {
+          const res = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-panel-key": pin,
+            },
+            body: JSON.stringify(body),
+          });
+          const data = await res.json();
+          logEl.textContent += `\n[${to}] -> ${JSON.stringify(data)}\n`;
+        } catch (err) {
+          logEl.textContent += `\n[${to}] -> Error: ${err.message}\n`;
+        }
+
+        // Rate limit এড়াতে নম্বরের মাঝে সামান্য বিরতি
+        await new Promise((r) => setTimeout(r, 400));
       }
+
+      btn.disabled = false;
     });
   </script>
 </body>
