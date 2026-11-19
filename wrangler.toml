@@ -1,0 +1,8 @@
+name = "banganur-api"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "banganur-news-db"
+database_id = "1793d9f7-ba5a-4202-84c6-83b93dda9837"
