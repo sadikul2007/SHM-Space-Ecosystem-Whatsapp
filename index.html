@@ -1262,6 +1262,35 @@
       if (!article) return renderHomeView();
       const related = getPublishedArticles().filter(a => a.id !== article.id).slice(0, 3);
       const paragraphs = (article.content || "").split("\n").filter(p => p.trim().length > 0);
+      const safeId = escapeHtml(article.id);
+
+      const shareButtonsHtml = `
+        <div class="flex flex-wrap items-center gap-2 no-print">
+          <span class="text-xs font-bold text-slate-500 mr-1"><i class="fa-solid fa-share-nodes mr-1 text-emeraldMid"></i>শেয়ার করুন:</span>
+          <button data-share="whatsapp" data-article-id="${safeId}" title="WhatsApp-এ শেয়ার করুন"
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition shadow-sm">
+            <i class="fa-brands fa-whatsapp text-sm sm:text-base"></i>
+          </button>
+          <button data-share="facebook" data-article-id="${safeId}" title="Facebook-এ শেয়ার করুন"
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-sm">
+            <i class="fa-brands fa-facebook-f text-sm"></i>
+          </button>
+          <button data-share="twitter" data-article-id="${safeId}" title="X (Twitter)-এ শেয়ার করুন"
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-slate-900 hover:bg-slate-700 text-white flex items-center justify-center transition shadow-sm">
+            <i class="fa-brands fa-x-twitter text-sm"></i>
+          </button>
+          <button data-share="copy" data-article-id="${safeId}" title="লিংক কপি করুন"
+            class="px-3 h-8 sm:h-9 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs flex items-center gap-1.5 transition shadow-sm">
+            <i class="fa-regular fa-copy"></i>
+            <span>লিংক কপি</span>
+          </button>
+          <button data-share="native" data-article-id="${safeId}" title="অন্যান্য অ্যাপে শেয়ার করুন"
+            class="px-3 h-8 sm:h-9 rounded-lg bg-emeraldDeep hover:bg-emeraldMid text-white font-bold text-xs flex items-center gap-1.5 transition shadow-sm">
+            <i class="fa-solid fa-share"></i>
+            <span>শেয়ার</span>
+          </button>
+        </div>
+      `;
 
       return `
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -1290,6 +1319,7 @@
                   <div class="text-xs text-slate-500">${escapeHtml(article.date || "")}</div>
                 </div>
               </div>
+              ${shareButtonsHtml}
             </div>
 
             <figure class="my-6 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
@@ -1301,6 +1331,11 @@
 
             <div class="space-y-4 text-base sm:text-lg text-slate-800 leading-relaxed">
               ${paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join("")}
+            </div>
+
+            <div class="mt-7 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 no-print">
+              <span class="text-sm font-bold text-navyDark">সংবাদটি ভালো লাগলে শেয়ার করুন:</span>
+              ${shareButtonsHtml}
             </div>
 
             <div class="my-8 no-print">${renderAdSlot("article")}</div>
@@ -1324,85 +1359,85 @@
           </aside>
         </div>
       `;
-    }
-
-    function toggleSearchModal() {
-      openUniversalModal("বঙ্গনূর সংবাদ অনুসন্ধান (Search)", `
-        <div class="space-y-4">
-          <input id="global-search-input" type="text"
-            placeholder="যেকোনো সংবাদ, বিভাগ বা প্রতিবেদকের নাম লিখুন..."
-            class="w-full px-4 py-3 rounded-xl border-2 border-emeraldMid focus:outline-none text-base" />
-          <div id="global-search-results" class="space-y-3 max-h-96 overflow-y-auto">
-            <p class="text-sm text-slate-500 text-center py-6">উপরের বক্সে লিখলে তাৎক্ষণিক ফলাফল দেখা যাবে।</p>
-          </div>
-        </div>
-      `);
-      const input = document.getElementById("global-search-input");
-      if (input) {
-        input.addEventListener("input", (e) => runGlobalSearch(e.target.value));
-        setTimeout(() => input.focus(), 100);
+    function getArticleShareUrl(articleId) {
+      try {
+        const base = window.location.origin && window.location.origin !== "null"
+          ? window.location.origin + window.location.pathname
+          : "https://banganur.in/";
+        return base + "?article=" + encodeURIComponent(articleId);
+      } catch (e) {
+        return "https://banganur.in/?article=" + encodeURIComponent(articleId);
       }
     }
 
-    function runGlobalSearch(query) {
-      const q = query.trim().toLowerCase();
-      const resBox = document.getElementById("global-search-results");
-      if (!resBox) return;
-      if (!q) {
-        resBox.innerHTML = '<p class="text-sm text-slate-500 text-center py-6">উপরের বক্সে লিখলে তাৎক্ষণিক ফলাফল দেখা যাবে।</p>';
-        return;
-      }
-      const matches = getPublishedArticles().filter(a =>
-        (a.title || "").toLowerCase().includes(q) ||
-        (a.summary || "").toLowerCase().includes(q) ||
-        (a.category || "").toLowerCase().includes(q) ||
-        (a.author || "").toLowerCase().includes(q)
-      );
-      if (!matches.length) {
-        resBox.innerHTML = `<p class="text-sm text-slate-500 text-center py-6">দুঃখিত, "${escapeHtml(query)}" সম্পর্কিত কোনো সংবাদ পাওয়া যায়নি।</p>`;
-        return;
-      }
-      resBox.innerHTML = matches.map(m => `
-        <button data-open-article="${escapeHtml(m.id)}" data-close-modal="1" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-emeraldLight transition flex items-center gap-3">
-          <img src="${escapeHtml(getArticleImage(m))}" alt="" class="w-16 h-12 rounded-lg object-cover shrink-0" />
-          <div>
-            <span class="text-[10px] font-bold text-emeraldDeep">${escapeHtml(m.category)}</span>
-            <h4 class="text-sm font-bold text-navyDark line-clamp-1">${escapeHtml(m.title)}</h4>
-            <span class="text-[11px] text-slate-400">${escapeHtml(m.date || "")}</span>
-          </div>
-        </button>
-      `).join("");
-    }
-
-    function openPolicyModal(type) {
-      const policies = {
-        about: {
-          title: "আমাদের সম্পর্কে — বঙ্গনূর (BANGANUR)",
-          body: "বঙ্গনূর (BANGANUR) একটি আধুনিক বাংলা ডিজিটাল সংবাদপত্র, সাহিত্য-সংস্কৃতি মাধ্যম এবং লাইভ নিউজ নেটওয়ার্ক।\n\n• সম্পাদক: মুহাম্মাদ আব্দুল মাতিন\n• ম্যানেজার: তরিকুল ইসলাম\n• প্রধান কার্যালয়: বঙ্গনূর ভবন, কাউকেপাড়া, দেগঙ্গা, উত্তর 24 পরগনা, পিন নং 743424\n• যোগাযোগ: 3216 242022 | মোবাইল: 96474 82859 | WhatsApp: 9647109481 | E-mail: banganur@gmail.com"
-        },
-        editorial: {
-          title: "সম্পাদকীয় নীতিমালা (Editorial Policy)",
-          body: "সম্পাদক মুহাম্মাদ আব্দুল মাতিন-এর নেতৃত্বে বঙ্গনূর নিউজরুমে প্রকাশিত প্রতিটি সংবাদ একাধিক নির্ভরযোগ্য সূত্র থেকে যাচাই করা হয়। সাম্প্রদায়িক সম্প্রীতি, গণতান্ত্রিক মূল্যবোধ এবং নৈতিক সাংবাদিকতার মানদণ্ড আমরা কঠোরভাবে অনুসরণ করি।"
-        },
-        privacy: {
-          title: "গোপনীয়তা নীতি (Privacy Policy)",
-          body: "পাঠকদের ব্যক্তিগত তথ্যের সুরক্ষা আমাদের কাছে সর্বোচ্চ অগ্রাধিকার পায়। আমরা কোনো তৃতীয় পক্ষের কাছে পাঠকদের ব্যক্তিগত ডেটা বিক্রি বা হস্তান্তর করি না।"
-        },
-        terms: {
-          title: "শর্তাবলী (Terms & Conditions)",
-          body: "বঙ্গনূর পোর্টালে প্রকাশিত সমস্ত লেখা, ছবি ও ভিডিও কপিরাইট আইন দ্বারা সংরক্ষিত। অনুমতি ব্যতীত বাণিজ্যিক পুনঃপ্রকাশ নিষিদ্ধ।"
-        },
-        ads: {
-          title: "বিজ্ঞাপন বিভাগ (Advertisement Desk)",
-          body: "বঙ্গনূর পত্রিকা, ডিজিটাল পোর্টাল এবং লাইভ টিভিতে আপনার ব্র্যান্ডের বিজ্ঞাপন দিতে যোগাযোগ করুন:\nম্যানেজার: তরিকুল ইসলাম\nফোন: 3216 242022 | মোবাইল: 96474 82859 | WhatsApp: 9647109481\nE-mail: banganur@gmail.com\nঠিকানা: বঙ্গনূর ভবন, কাউকেপাড়া, দেগঙ্গা, উত্তর 24 পরগনা, পিন নং 743424"
+    function copyTextToClipboard(text) {
+      try {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        const copied = document.execCommand("copy");
+        document.body.removeChild(textarea);
+        if (copied) {
+          showToast("সংবাদের লিংক কপি করা হয়েছে!", "success");
+          return;
         }
-      };
-      const item = policies[type] || policies.about;
-      openUniversalModal(item.title, `<p class="text-base leading-relaxed text-slate-700 whitespace-pre-line">${escapeHtml(item.body)}</p>`);
+      } catch (e) {}
+      showToast("লিংক কপি করা যায়নি, অনুগ্রহ করে ম্যানুয়ালি কপি করুন", "error");
+    }
+
+    function handleArticleShare(platform, articleId) {
+      const article = appState.articles.find(a => a.id === articleId) || getPublishedArticles()[0];
+      if (!article) return;
+
+      const shareUrl = getArticleShareUrl(article.id);
+      const shareTitle = article.title || "বঙ্গনূর সংবাদ";
+      const shareText = shareTitle + " — বঙ্গনূর (BANGANUR)";
+
+      if (platform === "copy") {
+        copyTextToClipboard(shareUrl);
+        return;
+      }
+
+      if (platform === "whatsapp") {
+        window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(shareText + "\n" + shareUrl), "_blank", "noopener,noreferrer");
+        return;
+      }
+
+      if (platform === "facebook") {
+        window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(shareUrl), "_blank", "noopener,noreferrer");
+        return;
+      }
+
+      if (platform === "twitter") {
+        window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(shareUrl), "_blank", "noopener,noreferrer");
+        return;
+      }
+
+      if (platform === "native") {
+        if (navigator.share) {
+          navigator.share({ title: shareTitle, text: shareText, url: shareUrl }).catch(() => {});
+        } else {
+          copyTextToClipboard(shareUrl);
+        }
+      }
     }
 
     function navigateTo(view, param = null) {
       currentRoute = { view, param };
+      try {
+        const url = new URL(window.location.href);
+        if (view === "article" && param) {
+          url.searchParams.set("article", param);
+        } else {
+          url.searchParams.delete("article");
+        }
+        window.history.replaceState({}, "", url.toString());
+      } catch (e) {}
       renderNavigation();
       renderCurrentView();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1467,6 +1502,13 @@
 
     // Safe Global Event Delegation (No inline JS injection risks)
     window.addEventListener("DOMContentLoaded", () => {
+      try {
+        const initialArticleId = new URLSearchParams(window.location.search).get("article");
+        if (initialArticleId) {
+          currentRoute = { view: "article", param: initialArticleId };
+        }
+      } catch (e) {}
+
       document.getElementById("mobile-menu-btn")?.addEventListener("click", () => {
         document.getElementById("mobile-menu-drawer")?.classList.toggle("hidden");
       });
@@ -1475,6 +1517,12 @@
       document.getElementById("close-modal-btn")?.addEventListener("click", closeUniversalModal);
 
       document.body.addEventListener("click", (e) => {
+        const shareEl = e.target.closest("[data-share]");
+        if (shareEl) {
+          handleArticleShare(shareEl.getAttribute("data-share"), shareEl.getAttribute("data-article-id"));
+          return;
+        }
+
         const navEl = e.target.closest("[data-nav]");
         if (navEl) {
           if (navEl.hasAttribute("data-close-drawer")) {
