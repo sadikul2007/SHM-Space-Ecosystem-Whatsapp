@@ -1359,6 +1359,83 @@
           </aside>
         </div>
       `;
+    }
+
+    function toggleSearchModal() {
+      openUniversalModal("বঙ্গনূর সংবাদ অনুসন্ধান (Search)", `
+        <div class="space-y-4">
+          <input id="global-search-input" type="text"
+            placeholder="যেকোনো সংবাদ, বিভাগ বা প্রতিবেদকের নাম লিখুন..."
+            class="w-full px-4 py-3 rounded-xl border-2 border-emeraldMid focus:outline-none text-base" />
+          <div id="global-search-results" class="space-y-3 max-h-96 overflow-y-auto">
+            <p class="text-sm text-slate-500 text-center py-6">উপরের বক্সে লিখলে তাৎক্ষণিক ফলাফল দেখা যাবে।</p>
+          </div>
+        </div>
+      `);
+      const input = document.getElementById("global-search-input");
+      if (input) {
+        input.addEventListener("input", (e) => runGlobalSearch(e.target.value));
+        setTimeout(() => input.focus(), 100);
+      }
+    }
+
+    function runGlobalSearch(query) {
+      const q = String(query || "").trim().toLowerCase();
+      const resBox = document.getElementById("global-search-results");
+      if (!resBox) return;
+      if (!q) {
+        resBox.innerHTML = `<p class="text-sm text-slate-500 text-center py-6">উপরের বক্সে লিখলে তাৎক্ষণিক ফলাফল দেখা যাবে।</p>`;
+        return;
+      }
+      const matches = getPublishedArticles().filter(a =>
+        (a.title || "").toLowerCase().includes(q) ||
+        (a.summary || "").toLowerCase().includes(q) ||
+        (a.category || "").toLowerCase().includes(q) ||
+        (a.author || "").toLowerCase().includes(q)
+      );
+      if (!matches.length) {
+        resBox.innerHTML = `<p class="text-sm text-slate-500 text-center py-6">দুঃখিত, "${escapeHtml(query)}" সম্পর্কিত কোনো সংবাদ পাওয়া যায়নি।</p>`;
+        return;
+      }
+      resBox.innerHTML = matches.map(m => `
+        <button data-open-article="${escapeHtml(m.id)}" data-close-modal="1" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-emeraldLight transition flex items-center gap-3">
+          <img src="${escapeHtml(getArticleImage(m))}" alt="${escapeHtml(m.title)}" class="w-16 h-12 rounded-lg object-cover shrink-0" />
+          <div>
+            <span class="text-[10px] font-bold text-emeraldDeep">${escapeHtml(m.category)}</span>
+            <h4 class="text-sm font-bold text-navyDark line-clamp-1">${escapeHtml(m.title)}</h4>
+            <span class="text-[11px] text-slate-400">${escapeHtml(m.date || "")}</span>
+          </div>
+        </button>
+      `).join("");
+    }
+
+    function openPolicyModal(type) {
+      const policies = {
+        about: {
+          title: "আমাদের সম্পর্কে — বঙ্গনূর (BANGANUR)",
+          body: "বঙ্গনূর (BANGANUR) একটি আধুনিক বাংলা ডিজিটাল সংবাদপত্র, সাহিত্য-সংস্কৃতি মাধ্যম এবং লাইভ নিউজ নেটওয়ার্ক।\n\n• সম্পাদক: মুহাম্মাদ আব্দুল মাতিন\n• ম্যানেজার: তরিকুল ইসলাম\n• প্রধান কার্যালয়: বঙ্গনূর ভবন, কাউকেপাড়া, দেগঙ্গা, উত্তর 24 পরগনা, পিন নং 743424\n• যোগাযোগ: 3216 242022 | মোবাইল: 96474 82859 | WhatsApp: 9647109481 | E-mail: banganur@gmail.com"
+        },
+        editorial: {
+          title: "সম্পাদকীয় নীতিমালা (Editorial Policy)",
+          body: "সম্পাদক মুহাম্মাদ আব্দুল মাতিন-এর নেতৃত্বে বঙ্গনূর নিউজরুমে প্রকাশিত প্রতিটি সংবাদ একাধিক নির্ভরযোগ্য সূত্র থেকে যাচাই করা হয়। সাম্প্রদায়িক সম্প্রীতি, গণতান্ত্রিক মূল্যবোধ এবং নৈতিক সাংবাদিকতার মানদণ্ড আমরা কঠোরভাবে অনুসরণ করি।"
+        },
+        privacy: {
+          title: "গোপনীয়তা নীতি (Privacy Policy)",
+          body: "পাঠকদের ব্যক্তিগত তথ্যের সুরক্ষা আমাদের কাছে সর্বোচ্চ অগ্রাধিকার পায়। আমরা কোনো তৃতীয় পক্ষের কাছে পাঠকদের ব্যক্তিগত ডেটা বিক্রি বা হস্তান্তর করি না।"
+        },
+        terms: {
+          title: "শর্তাবলী (Terms & Conditions)",
+          body: "বঙ্গনূর পোর্টালে প্রকাশিত সমস্ত লেখা, ছবি ও ভিডিও কপিরাইট আইন দ্বারা সংরক্ষিত। অনুমতি ব্যতীত বাণিজ্যিক পুনঃপ্রকাশ নিষিদ্ধ।"
+        },
+        ads: {
+          title: "বিজ্ঞাপন বিভাগ (Advertisement Desk)",
+          body: "বঙ্গনূর পত্রিকা, ডিজিটাল পোর্টাল, ই-পেপার এবং লাইভ টিভিতে আপনার ব্র্যান্ডের বিজ্ঞাপন দিতে যোগাযোগ করুন:\nম্যানেজার: তরিকুল ইসলাম\nফোন: 3216 242022 | মোবাইল: 96474 82859 | WhatsApp: 9647109481\nE-mail: banganur@gmail.com\nঠিকানা: বঙ্গনূর ভবন, কাউকেপাড়া, দেগঙ্গা, উত্তর 24 পরগনা, পিন নং 743424"
+        }
+      };
+      const item = policies[type] || policies.about;
+      openUniversalModal(item.title, `<p class="text-base leading-relaxed text-slate-700 whitespace-pre-line">${escapeHtml(item.body)}</p>`);
+    }
+
     function getArticleShareUrl(articleId) {
       try {
         const base = window.location.origin && window.location.origin !== "null"
