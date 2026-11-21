@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071827"><title>E-Paper Flipbook | বঙ্গনুর</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef2f6;color:#14283d;font-family:'Noto Sans Bengali',sans-serif}.top{background:#071827;color:#fff;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.brand{font-weight:900;color:#fff;text-decoration:none;font-size:20px}.brand span{color:#ff982d}.back{color:#fff;text-decoration:none;background:#08765e;padding:8px 13px;border-radius:7px;font-size:13px;font-weight:700}.heading{text-align:center;padding:19px 12px 8px}.heading h1{font-size:22px;margin:0 0 4px;color:#005743}.heading p{font-size:12px;color:#64748b;margin:0}.viewer{max-width:1100px;margin:14px auto;padding:0 14px}.toolbar{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin:12px 0}.tool{border:0;background:#005743;color:#fff;border-radius:7px;padding:9px 14px;font-weight:700;cursor:pointer;font-family:inherit}.tool:disabled{opacity:.4;cursor:not-allowed}.tool.light{background:#fff;color:#14283d;border:1px solid #cbd5e1}.counter{font:700 13px Roboto,sans-serif;color:#334155;min-width:95px;text-align:center}#bookWrap{width:100%;min-height:420px;display:flex;align-items:center;justify-content:center;overflow:hidden}#book{margin:auto}.page{background:#fff;overflow:hidden;box-shadow:0 2px 8px #0002}.page canvas{display:block;width:100%;height:100%;object-fit:contain}.status{text-align:center;padding:20px;color:#64748b;font-size:14px}.error{color:#b91c1c;background:#fff;border:1px solid #fecaca;border-radius:10px;padding:16px;max-width:650px;margin:20px auto;line-height:1.7}.foot{text-align:center;color:#64748b;font-size:11px;padding:20px}@media(max-width:600px){.heading h1{font-size:19px}#bookWrap{min-height:300px}.tool{padding:8px 11px;font-size:12px}}
+</style>
+</head>
+<body>
+<header class="top"><a class="brand" href="index.html">বঙ্গনুর <span>BANGANUR</span></a><a class="back" href="index.html">← E-Paper Archive</a></header>
+<div class="heading"><h1 id="paperTitle">E-Paper Flipbook</h1><p>পাতা উল্টে সংবাদপত্র পড়ুন</p></div>
+<div class="viewer">
+  <div class="toolbar">
+    <button class="tool" id="prev">❮ Previous</button><span class="counter" id="counter">Loading...</span><button class="tool" id="next">Next ❯</button>
+    <a class="tool light" id="openPdf" href="#" target="_blank" rel="noopener">View PDF</a>
+    <button class="tool light" id="full">⛶ Fullscreen</button>
+  </div>
+  <div id="bookWrap"><div class="status" id="status">PDF লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</div><div id="book"></div></div>
+</div>
+<div class="foot">বঙ্গনুর | BANGANUR Bengali Digital News Portal</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
+<script>
+(async function(){
+  const params=new URLSearchParams(location.search);
+  const file=params.get("file")||"demo1.pdf";
+  const title=params.get("title")||"E-Paper Flipbook";
+  document.getElementById("paperTitle").textContent=title;
+  document.getElementById("openPdf").href=file;
+  const status=document.getElementById("status");
+  const bookEl=document.getElementById("book");
+  const wrap=document.getElementById("bookWrap");
+  if(!window.pdfjsLib||!window.St){status.innerHTML="প্রয়োজনীয় লাইব্রেরি লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।";return;}
+  pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  try{
+    const pdf=await pdfjsLib.getDocument(file).promise;
+    const pages=[];
+    for(let n=1;n<=pdf.numPages;n++){
+      status.textContent=`পৃষ্ঠা প্রস্তুত হচ্ছে: ${n} / ${pdf.numPages}`;
+      const page=await pdf.getPage(n);
+      const viewport=page.getViewport({scale:1.25});
+      const canvas=document.createElement("canvas");
+      canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+      await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
+      const div=document.createElement("div");div.className="page";div.appendChild(canvas);pages.push(div);
+    }
+    status.remove();
+    const pageFlip=new St.PageFlip(bookEl,{
+      width:550,height:760,size:"stretch",minWidth:280,maxWidth:550,minHeight:380,maxHeight:760,
+      maxShadowOpacity:0.35,showCover:false,mobileScrollSupport:true,drawShadow:true,
+      flippingTime:700,usePortrait:true,startPage:0,autoSize:true
+    });
+    pageFlip.loadFromHTML(pages);
+    const counter=document.getElementById("counter");
+    function update(){counter.textContent=`${pageFlip.getCurrentPageIndex()+1} / ${pdf.numPages}`;document.getElementById("prev").disabled=pageFlip.getCurrentPageIndex()===0;document.getElementById("next").disabled=pageFlip.getCurrentPageIndex()>=pdf.numPages-1;}
+    pageFlip.on("flip",update);update();
+    document.getElementById("prev").onclick=()=>pageFlip.flipPrev();
+    document.getElementById("next").onclick=()=>pageFlip.flipNext();
+    document.getElementById("full").onclick=()=>{if(!document.fullscreenElement)wrap.requestFullscreen?.();else document.exitFullscreen?.();};
+  }catch(err){
+    status.innerHTML=`<div class="error"><strong>PDF খোলা যাচ্ছে না।</strong><br>ফাইলটি একই ফোল্ডারে আছে কি না এবং নামটি ঠিক আছে কি না পরীক্ষা করুন।<br><small>${String(err.message||err)}</small><br><a href="${file}" target="_blank">PDF সরাসরি খুলুন</a></div>`;
+  }
+})();
+</script>
+</body></html>

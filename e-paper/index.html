@@ -1,1 +1,84 @@
-fdssa
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071827">
+  <title>E-Paper Archive | বঙ্গনুর</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Roboto:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#071827;--green:#005743;--green2:#08765e;--orange:#ff982d;--red:#ed1834;--ink:#10243a;--muted:#64748b;--line:#dbe4ed;--paper:#f3f6fa}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:'Noto Sans Bengali',Roboto,sans-serif}
+    a{text-decoration:none;color:inherit}.top{background:var(--navy);color:#fff;font:13px Roboto,sans-serif;padding:10px max(18px,calc((100% - 1210px)/2);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .top strong{color:#ffad36}.mast{background:#fff;border-bottom:1px solid var(--line)}.mastin{max-width:1210px;margin:auto;padding:22px 18px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:12px}.logo{width:56px;height:56px;border:2px solid var(--orange);border-radius:13px;display:grid;place-items:center;color:var(--green);font-size:24px;font-weight:900;box-shadow:0 3px 8px #0001}
+    .brandname{font-size:30px;line-height:1;color:var(--green);font-weight:900}.brandname small{font:800 16px Roboto,sans-serif;color:var(--ink)}.tag{font:700 11px Roboto,sans-serif;letter-spacing:2px;color:#e85b28;margin-top:7px}
+    .mastnote{border:1px solid var(--line);border-radius:12px;padding:13px 20px;color:var(--green);font-weight:700;background:#fbfdff}
+    nav{background:var(--green);border-bottom:3px solid var(--orange);color:#fff}.navin{max-width:1210px;margin:auto;padding:0 18px;display:flex;align-items:center;gap:8px;min-height:51px;flex-wrap:wrap}.navin a{padding:13px 14px;font-weight:700;font-size:14px}.navin a.active{background:var(--orange);color:#10243a;border-radius:9px 9px 0 0}.navin .spacer{flex:1}.navin .home{background:#ed1834;border-radius:9px;padding:8px 18px}
+    .breaking{background:#fff;border-bottom:1px solid var(--line);padding:10px 18px;display:flex;align-items:center;gap:14px;overflow:hidden;white-space:nowrap}.breaking b{background:var(--red);color:#fff;border-radius:7px;padding:6px 12px;font-size:13px}.breaking span{font-size:13px;color:#34445a}
+    main{max-width:1210px;margin:24px auto;padding:0 18px}.hero{background:linear-gradient(115deg,#fff,#f4fbf8);border:1px solid var(--line);border-radius:15px;padding:25px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 2px 5px #10243a08}
+    .eyebrow{color:#e85b28;font:800 12px Roboto,sans-serif;letter-spacing:2px}.hero h1{margin:5px 0;color:var(--green);font-size:clamp(25px,4vw,37px)}.hero p{margin:0;color:var(--muted);font-size:14px}.heroicon{font-size:48px}
+    .sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 15px;border-bottom:2px solid var(--green);padding-bottom:10px}.sectionhead h2{margin:0;font-size:21px}.sectionhead span{font:700 11px Roboto,sans-serif;color:var(--green)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.paper{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 3px 12px #10243a0a;transition:.2s}.paper:hover{transform:translateY(-3px);box-shadow:0 8px 22px #10243a14}
+    .cover{height:160px;background:linear-gradient(135deg,#e8f4ef,#dbe8f2);display:grid;place-items:center;position:relative}.cover:before{content:"";position:absolute;inset:12px;border:1px solid #00574333;border-radius:7px}.covericon{font-size:53px;filter:drop-shadow(0 4px 3px #0002)}.edition{position:absolute;top:13px;left:13px;background:var(--green);color:white;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700}
+    .paperbody{padding:16px}.paperbody h3{margin:0 0 5px;font-size:18px;color:var(--ink)}.paperbody p{margin:0;color:var(--muted);font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:7px;font-size:12px;font-weight:800;border:1px solid transparent;cursor:pointer}.primary{background:var(--green);color:white}.secondary{background:#fff;border-color:#cbd5e1;color:var(--ink)}.download{background:#fff3e5;border-color:#ffd5a4;color:#9a4a00}
+    .note{margin:24px 0;background:#fff;border:1px dashed #b8c9d7;border-radius:12px;padding:16px;color:#536477;font-size:13px;line-height:1.8}.note strong{color:var(--green)}footer{margin-top:40px;background:var(--navy);color:#cbd5e1;text-align:center;padding:22px 15px;font-size:12px}footer strong{color:#fff}
+    @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mastnote{display:none}}
+    @media(max-width:560px){.top{font-size:11px}.mastin{padding:16px}.brandname{font-size:25px}.brandname small{font-size:13px}.logo{width:48px;height:48px}.navin{gap:0}.navin a{padding:11px 10px;font-size:12px}.hero{padding:19px}.heroicon{font-size:36px}.grid{grid-template-columns:1fr}.cover{height:145px}main{margin:17px auto}}
+  </style>
+</head>
+<body>
+  <div class="top"><span><strong>● ২৬ কার্তিক ১৪৩৩ বঙ্গাব্দ</strong>　|　Saturday, November 21, 2026</span><span>বাংলা ডিজিটাল নিউজ পোর্টাল</span></div>
+  <header class="mast"><div class="mastin">
+    <a class="brand" href="index.html"><div class="logo">ব</div><div><div class="brandname">বঙ্গনুর <small>BANGANUR</small></div><div class="tag">BENGALI DIGITAL NEWS PORTAL</div></div></a>
+    <div class="mastnote">📰　সংবাদপত্রের ডিজিটাল সংস্করণ</div>
+  </div></header>
+  <nav><div class="navin">
+    <a href="https://webshm.blogspot.com/" >হোম</a><a href="#">রাজ্য</a><a href="#">দেশ</a><a href="#">বিশ্ব</a><a href="#">সাহিত্য</a><a href="#">সম্পাদকীয়</a>
+    <span class="spacer"></span><a class="active" href="index.html">E-PAPER</a><a class="home" href="https://webshm.blogspot.com/">● LIVE NEWS</a>
+  </div></nav>
+  <div class="breaking"><b>● E-PAPER</b><span>বঙ্গনুর-এর ডিজিটাল সংবাদপত্র | পুরনো ও নতুন সংখ্যা এক জায়গায় পড়ুন</span></div>
+
+  <main>
+    <section class="hero">
+      <div><div class="eyebrow">BANGANUR DIGITAL EDITION</div><h1>ই-পেপার আর্কাইভ</h1><p>প্রতিটি সংখ্যা পড়ুন আধুনিক Flipbook অভিজ্ঞতায় অথবা PDF ডাউনলোড করুন।</p></div>
+      <div class="heroicon">📖</div>
+    </section>
+
+    <div class="sectionhead"><h2>📰 প্রকাশিত E-Paper</h2><span>FLIPBOOK COLLECTION</span></div>
+    <section class="grid" id="paperGrid">
+      <!-- নতুন সংখ্যা যোগ করতে নিচের JavaScript-এর editions তালিকায় একটি item যোগ করুন -->
+    </section>
+
+    <div class="note"><strong>প্রকাশকের জন্য:</strong> এই <code>index.html</code> এবং <code>flipbook.html</code> ফাইলের সঙ্গে PDF ফাইলগুলি একই ফোল্ডারে আপলোড করুন। যেমন: <code>demo1.pdf</code>, <code>demo2.pdf</code>। নতুন সংখ্যা যোগ করতে নিচের <code>editions</code> তালিকায় নাম, তারিখ ও PDF ফাইলের নাম লিখলেই হবে।</div>
+  </main>
+  <footer><strong>বঙ্গনুর | BANGANUR</strong><br>বাংলা ডিজিটাল নিউজ পোর্টাল · E-Paper Archive</footer>
+
+  <script>
+    // PDF ফাইল একই ফোল্ডারে রাখুন। নতুন সংখ্যা যোগ করতে এই তালিকায় আরেকটি object কপি করুন।
+    const editions = [
+      { title: "E-Paper Demo 01", date: "২১ নভেম্বর ২০২৬", pdf: "demo1.pdf", label: "DEMO 01" },
+      { title: "E-Paper Demo 02", date: "২০ নভেম্বর ২০২৬", pdf: "demo2.pdf", label: "DEMO 02" }
+    ];
+
+    const grid = document.getElementById("paperGrid");
+    grid.innerHTML = editions.map((paper, i) => {
+      const flipUrl = "flipbook.html?file=" + encodeURIComponent(paper.pdf) + "&title=" + encodeURIComponent(paper.title);
+      return `
+        <article class="paper">
+          <div class="cover"><span class="edition">${paper.label || "E-PAPER"}</span><div class="covericon">📰</div></div>
+          <div class="paperbody">
+            <h3>${paper.title}</h3><p>প্রকাশের তারিখ: ${paper.date}</p>
+            <div class="actions">
+              <a class="btn primary" href="${flipUrl}">📖 Read Flipbook</a>
+              <a class="btn secondary" href="${paper.pdf}" target="_blank" rel="noopener">👁 View PDF</a>
+              <a class="btn download" href="${paper.pdf}" download>⬇ Download</a>
+            </div>
+          </div>
+        </article>`;
+    }).join("");
+  </script>
+</body>
+</html>
