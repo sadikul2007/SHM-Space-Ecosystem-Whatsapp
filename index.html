@@ -449,6 +449,7 @@
           author: "মুহাম্মাদ আব্দুল মাতিন",
           date: "১২ নভেম্বর, ২০২৬ • দুপুর ১:১৫",
           status: "published",
+          featured: 2,
           image: createEditorialSVG("emerald", "দক্ষিণবঙ্গে শীতের আমেজ"),
           summary: "কার্তিকের শেষ লগ্নেই বঙ্গে শীতের আগমনী বার্তা। আলিপুর আবহাওয়া দপ্তর জানিয়েছে, উত্তর-পশ্চিম দিক থেকে শুষ্ক শীতল হাওয়া রাজ্যে প্রবেশ করায় রাতের তাপমাত্রা স্বাভাবিকের চেয়ে নিচে নেমেছে।",
           content: "কলকাতা: কার্তিকের শেষ সপ্তাহেই রাজ্যজুড়ে অনুভূত হচ্ছে মনোরম শীতের আমেজ। ভোরের দিকে হালকা কুয়াশা এবং রাতের তাপমাত্রা কমায় শহর কলকাতা থেকে শুরু করে উত্তর ২৪ পরগনা ও জেলায় জেলায় শীতের আমেজ ছড়িয়ে পড়েছে।"
@@ -461,6 +462,7 @@
           author: "তরিকুল ইসলাম",
           date: "১২ নভেম্বর, ২০২৬ • সকাল ১১:৪০",
           status: "published",
+          featured: 1,
           image: createEditorialSVG("navy", "গ্রামীণ পরিকাঠামো উন্নয়ন"),
           summary: "উত্তর ২৪ পরগনার প্রত্যন্ত এলাকার সঙ্গে কলকাতার সরাসরি সড়ক যোগাযোগ আরও মসৃণ করতে নতুন কংক্রিট সেতু ও প্রশস্ত রাস্তার কাজের সূচনা হলো।",
           content: "দেগঙ্গা: উত্তর ২৪ পরগনা জেলার গ্রামীণ অর্থনীতি ও যোগাযোগ ব্যবস্থাকে আরও গতিশীল করতে নতুন সড়ক ও সেতু সংস্কার প্রকল্পের কাজ শুরু হয়েছে।"
@@ -473,6 +475,7 @@
           author: "মাওলানা আব্দুল করিম",
           date: "১২ নভেম্বর, ২০২৬ • সকাল ৯:০০",
           status: "published",
+          featured: 0,
           image: createEditorialSVG("spiritual", "ধর্ম ও আধ্যাত্ম্য"),
           summary: "আধুনিক ব্যস্ত জীবনে মানসিক প্রশান্তি ও সামাজিক সম্প্রীতি বজায় রাখতে ধর্মীয় শিক্ষা ও আধ্যাত্মিক চর্চার ভূমিকা অপরিসীম।",
           content: "মানুষের জীবনে প্রকৃত শান্তি আসে নৈতিকতা, সহমর্মিতা ও আত্মশুদ্ধির মাধ্যমে। সকল ধর্মই মানবসেবা, সত্যবাদিতা ও পারস্পরিক শ্রদ্ধাবোধের শিক্ষা দেয়।"
@@ -1035,8 +1038,21 @@
 
     function renderHomeView() {
       const published = getPublishedArticles();
-      const hero = published.find(a => a.id === appState.settings.homepage.heroArticleId) || published[0];
-      const trending = published.filter(a => a.id !== hero?.id).slice(0, 4);
+
+      // 1. প্রধান সংবাদ (Lead / Hero): Pick explicitly marked featured === 2, fallback to latest news (>0) or first article
+      const hero =
+        published.find(a => Number(a.featured) === 2) ||
+        published.find(a => Number(a.featured) > 0) ||
+        published[0];
+
+      // 2. ট্রেন্ডিং ও শীর্ষ সংবাদ (Top Stories): Pick featured === 3 first, then fill up to 4 from featured === 1 (excludes category-only 0)
+      const explicitTrending = published.filter(a => a.id !== hero?.id && Number(a.featured) === 3);
+      const fillTrending = published.filter(a => a.id !== hero?.id && Number(a.featured) === 1);
+      const trending = [...explicitTrending, ...fillTrending].slice(0, 4);
+
+      // 3. সর্বশেষ সংবাদ (Latest News): Only show articles selected for Latest/Lead/Trending (featured > 0), NOT category-only (0) like সাহিত্য
+      const markedLatest = published.filter(a => Number(a.featured) > 0);
+      const latestNews = markedLatest.length ? markedLatest.slice(0, 6) : published.slice(0, 6);
 
       const categorySections = [
         { title: "রাজ্য সংবাদ", cat: "রাজ্য", badgeColor: "bg-emeraldDeep" },
@@ -1118,7 +1134,7 @@
             </div>
 
             <div class="space-y-4">
-              ${published.slice(0, 6).map(news => `
+              ${latestNews.map(news => `
                 <article data-open-article="${escapeHtml(news.id)}" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md hover:border-emeraldMid transition flex flex-col sm:flex-row gap-4 cursor-pointer group">
                   <div class="sm:w-52 aspect-video sm:aspect-[16/10] rounded-xl overflow-hidden shrink-0 bg-slate-100">
                     <img src="${escapeHtml(getArticleImage(news))}" alt="${escapeHtml(news.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
@@ -1546,7 +1562,6 @@
           const data = await res.json();
           if (Array.isArray(data.articles) && data.articles.length) {
             appState.articles = data.articles;
-            appState.settings.homepage.heroArticleId = data.articles[0].id;
           }
           if (Array.isArray(data.breakingNews) && data.breakingNews.length) {
             appState.breakingNews = data.breakingNews;
