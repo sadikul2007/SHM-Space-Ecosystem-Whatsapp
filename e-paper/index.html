@@ -1,84 +1,72 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#071827">
-  <title>E-Paper Archive | বঙ্গনুর</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&family=Roboto:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{--navy:#071827;--green:#005743;--green2:#08765e;--orange:#ff982d;--red:#ed1834;--ink:#10243a;--muted:#64748b;--line:#dbe4ed;--paper:#f3f6fa}
-    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:'Noto Sans Bengali',Roboto,sans-serif}
-    a{text-decoration:none;color:inherit}.top{background:var(--navy);color:#fff;font:13px Roboto,sans-serif;padding:10px max(18px,calc((100% - 1210px)/2);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-    .top strong{color:#ffad36}.mast{background:#fff;border-bottom:1px solid var(--line)}.mastin{max-width:1210px;margin:auto;padding:22px 18px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-    .brand{display:flex;align-items:center;gap:12px}.logo{width:56px;height:56px;border:2px solid var(--orange);border-radius:13px;display:grid;place-items:center;color:var(--green);font-size:24px;font-weight:900;box-shadow:0 3px 8px #0001}
-    .brandname{font-size:30px;line-height:1;color:var(--green);font-weight:900}.brandname small{font:800 16px Roboto,sans-serif;color:var(--ink)}.tag{font:700 11px Roboto,sans-serif;letter-spacing:2px;color:#e85b28;margin-top:7px}
-    .mastnote{border:1px solid var(--line);border-radius:12px;padding:13px 20px;color:var(--green);font-weight:700;background:#fbfdff}
-    nav{background:var(--green);border-bottom:3px solid var(--orange);color:#fff}.navin{max-width:1210px;margin:auto;padding:0 18px;display:flex;align-items:center;gap:8px;min-height:51px;flex-wrap:wrap}.navin a{padding:13px 14px;font-weight:700;font-size:14px}.navin a.active{background:var(--orange);color:#10243a;border-radius:9px 9px 0 0}.navin .spacer{flex:1}.navin .home{background:#ed1834;border-radius:9px;padding:8px 18px}
-    .breaking{background:#fff;border-bottom:1px solid var(--line);padding:10px 18px;display:flex;align-items:center;gap:14px;overflow:hidden;white-space:nowrap}.breaking b{background:var(--red);color:#fff;border-radius:7px;padding:6px 12px;font-size:13px}.breaking span{font-size:13px;color:#34445a}
-    main{max-width:1210px;margin:24px auto;padding:0 18px}.hero{background:linear-gradient(115deg,#fff,#f4fbf8);border:1px solid var(--line);border-radius:15px;padding:25px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 2px 5px #10243a08}
-    .eyebrow{color:#e85b28;font:800 12px Roboto,sans-serif;letter-spacing:2px}.hero h1{margin:5px 0;color:var(--green);font-size:clamp(25px,4vw,37px)}.hero p{margin:0;color:var(--muted);font-size:14px}.heroicon{font-size:48px}
-    .sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 15px;border-bottom:2px solid var(--green);padding-bottom:10px}.sectionhead h2{margin:0;font-size:21px}.sectionhead span{font:700 11px Roboto,sans-serif;color:var(--green)}
-    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.paper{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 3px 12px #10243a0a;transition:.2s}.paper:hover{transform:translateY(-3px);box-shadow:0 8px 22px #10243a14}
-    .cover{height:160px;background:linear-gradient(135deg,#e8f4ef,#dbe8f2);display:grid;place-items:center;position:relative}.cover:before{content:"";position:absolute;inset:12px;border:1px solid #00574333;border-radius:7px}.covericon{font-size:53px;filter:drop-shadow(0 4px 3px #0002)}.edition{position:absolute;top:13px;left:13px;background:var(--green);color:white;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700}
-    .paperbody{padding:16px}.paperbody h3{margin:0 0 5px;font-size:18px;color:var(--ink)}.paperbody p{margin:0;color:var(--muted);font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:7px;font-size:12px;font-weight:800;border:1px solid transparent;cursor:pointer}.primary{background:var(--green);color:white}.secondary{background:#fff;border-color:#cbd5e1;color:var(--ink)}.download{background:#fff3e5;border-color:#ffd5a4;color:#9a4a00}
-    .note{margin:24px 0;background:#fff;border:1px dashed #b8c9d7;border-radius:12px;padding:16px;color:#536477;font-size:13px;line-height:1.8}.note strong{color:var(--green)}footer{margin-top:40px;background:var(--navy);color:#cbd5e1;text-align:center;padding:22px 15px;font-size:12px}footer strong{color:#fff}
-    @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mastnote{display:none}}
-    @media(max-width:560px){.top{font-size:11px}.mastin{padding:16px}.brandname{font-size:25px}.brandname small{font-size:13px}.logo{width:48px;height:48px}.navin{gap:0}.navin a{padding:11px 10px;font-size:12px}.hero{padding:19px}.heroicon{font-size:36px}.grid{grid-template-columns:1fr}.cover{height:145px}main{margin:17px auto}}
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#063f32">
+<title>E-Paper | বঙ্গনুর</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800;900&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--green:#005743;--deep:#063d32;--orange:#ff982d;--red:#ed1834;--ink:#12263a;--muted:#718096;--line:#dce5eb;--bg:#f2f5f7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans Bengali',sans-serif}
+a{text-decoration:none;color:inherit}.topline{height:34px;background:#081a2b;color:#e8eef5;font:12px Roboto,sans-serif;display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100% - 1240px)/2));gap:15px}
+.topline b{color:#ffb044}.masthead{background:#fff;border-bottom:1px solid #e3e9ee}.mastinner{max-width:1240px;margin:auto;min-height:108px;padding:17px 18px;display:flex;align-items:center;justify-content:space-between;gap:25px}
+.brand{display:flex;align-items:center;gap:13px}.brandmark{width:58px;height:58px;border:2px solid var(--orange);border-radius:12px;display:grid;place-items:center;color:var(--green);font-weight:900;font-size:28px;box-shadow:0 4px 12px #10243a18}.brandtitle{font-size:31px;line-height:1;color:var(--green);font-weight:900}.brandtitle small{font:900 17px Roboto,sans-serif;color:#12263a}.tagline{font:700 10px Roboto,sans-serif;color:#e85b28;letter-spacing:2.4px;margin-top:7px}
+.mast-ad{min-width:260px;border:1px solid var(--line);border-radius:12px;padding:13px 22px;text-align:center;color:var(--green);font-size:13px;font-weight:800;background:#fbfdfc}
+.nav{background:var(--green);border-bottom:3px solid var(--orange);color:#fff}.navinner{max-width:1240px;margin:auto;display:flex;align-items:center;gap:3px;padding:0 18px;min-height:50px;flex-wrap:wrap}.nav a{font-weight:800;font-size:14px;padding:13px 14px}.nav a:hover{background:#ffffff18}.nav .selected{background:var(--orange);color:#13283b;border-radius:8px 8px 0 0}.nav .right{margin-left:auto;background:var(--red);border-radius:8px;padding:8px 17px}
+.crumb{max-width:1240px;margin:14px auto 0;padding:0 18px;color:#7a8997;font-size:12px}.crumb b{color:var(--green)}
+main{max-width:1240px;margin:16px auto 50px;padding:0 18px}
+.banner{position:relative;overflow:hidden;background:linear-gradient(105deg,#063d32 0%,#00634d 62%,#0b8062 100%);border-radius:15px;color:#fff;padding:29px 34px;display:flex;align-items:center;justify-content:space-between;gap:20px;box-shadow:0 9px 22px #063d3224}
+.banner:after{content:"";position:absolute;width:300px;height:300px;border:1px solid #ffffff24;border-radius:50%;right:5%;top:-180px;box-shadow:0 0 0 28px #ffffff09,0 0 0 58px #ffffff07}
+.bannertext{position:relative;z-index:1}.overline{font:800 11px Roboto,sans-serif;letter-spacing:2.6px;color:#ffc078}.banner h1{font-size:clamp(27px,4vw,39px);margin:7px 0 4px;font-weight:900}.banner p{margin:0;color:#d8eee7;font-size:14px}.bannericon{position:relative;z-index:1;font-size:60px;margin-right:5%;filter:drop-shadow(0 7px 5px #001b15)}
+.toolsrow{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:26px 0 15px}.sectiontitle{display:flex;align-items:center;gap:10px}.sectiontitle .dot{width:10px;height:10px;background:var(--red);border-radius:50%}.sectiontitle h2{font-size:21px;margin:0;font-weight:900}.sectiontitle small{font:800 10px Roboto,sans-serif;letter-spacing:1px;color:var(--green);border-left:1px solid #cbd5df;padding-left:10px}
+.count{font:800 11px Roboto,sans-serif;color:var(--green);background:#e2f1eb;border:1px solid #c6e2d6;padding:7px 11px;border-radius:20px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}
+.card{background:#fff;border:1px solid #dce5eb;border-radius:13px;overflow:hidden;box-shadow:0 3px 11px #10243a08;transition:transform .2s,box-shadow .2s}.card:hover{transform:translateY(-4px);box-shadow:0 12px 24px #10243a13}
+.cover{height:205px;position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#e9f0eb,#dce7e2);overflow:hidden}
+.cover:before{content:"";position:absolute;width:142px;height:184px;background:#fff;box-shadow:0 8px 20px #0b382c24;transform:rotate(-5deg);border:1px solid #d6dfdb}
+.paper-preview{z-index:1;width:126px;height:164px;background:#fff;border:1px solid #d8e0dc;padding:10px 8px;transform:rotate(-5deg);box-shadow:0 3px 9px #0001}
+.preview-head{font-size:12px;font-weight:900;color:var(--green);text-align:center;border-bottom:3px double var(--green);padding-bottom:5px}.preview-lines{height:5px;background:#d5ded9;margin-top:7px}.preview-lines.short{width:65%}.preview-photo{height:39px;background:linear-gradient(135deg,#b4c8be,#e2e9e5);margin-top:8px}.preview-cols{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px}.preview-cols i{height:43px;background:repeating-linear-gradient(to bottom,#cfd8d3 0 2px,transparent 2px 5px)}
+.badge{position:absolute;left:14px;top:13px;background:var(--red);color:#fff;font:800 10px Roboto,sans-serif;letter-spacing:.5px;padding:6px 9px;border-radius:5px;z-index:2}.date{position:absolute;right:13px;top:13px;background:#fff;color:#526477;font-size:10px;padding:5px 8px;border-radius:5px;z-index:2}
+.cardbody{padding:16px 17px 17px}.cardbody h3{font-size:17px;margin:0 0 5px;color:#10243a;font-weight:900}.meta{font-size:11px;color:#7b8794}.rule{height:1px;background:#edf1f4;margin:13px 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border-radius:7px;padding:9px 12px;font-size:11px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s}.btn.main{background:var(--green);color:#fff;flex:1}.btn.main:hover{background:#064638}.btn.outline{border:1px solid #d2dce3;color:#31465a;background:#fff}.btn.download{background:#fff2e4;color:#a65300;border:1px solid #ffd9b0}
+.info{margin-top:24px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--orange);padding:14px 17px;border-radius:9px;color:#657487;font-size:12px;line-height:1.8}.info strong{color:var(--green)}
+footer{background:#081a2b;color:#bdc9d5;text-align:center;padding:24px 15px;font-size:12px}footer b{color:#fff}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mast-ad{display:none}}
+@media(max-width:580px){.topline{font-size:10px}.mastinner{min-height:82px}.brandmark{width:48px;height:48px;font-size:23px}.brandtitle{font-size:25px}.brandtitle small{font-size:13px}.tagline{font-size:8px;letter-spacing:1.5px}.navinner{padding:0 9px}.nav a{font-size:12px;padding:11px 9px}.nav .right{margin:5px 0 5px auto}.banner{padding:23px 20px}.bannericon{font-size:42px;margin:0}.banner p{font-size:12px}.toolsrow{margin-top:22px}.sectiontitle h2{font-size:17px}.sectiontitle small{display:none}.grid{grid-template-columns:1fr;gap:14px}.cover{height:185px}main{padding:0 13px}.crumb{padding:0 13px}}
+</style>
 </head>
 <body>
-  <div class="top"><span><strong>● ২৬ কার্তিক ১৪৩৩ বঙ্গাব্দ</strong>　|　Saturday, November 21, 2026</span><span>বাংলা ডিজিটাল নিউজ পোর্টাল</span></div>
-  <header class="mast"><div class="mastin">
-    <a class="brand" href="index.html"><div class="logo">ব</div><div><div class="brandname">বঙ্গনুর <small>BANGANUR</small></div><div class="tag">BENGALI DIGITAL NEWS PORTAL</div></div></a>
-    <div class="mastnote">📰　সংবাদপত্রের ডিজিটাল সংস্করণ</div>
-  </div></header>
-  <nav><div class="navin">
-    <a href="https://webshm.blogspot.com/" >হোম</a><a href="#">রাজ্য</a><a href="#">দেশ</a><a href="#">বিশ্ব</a><a href="#">সাহিত্য</a><a href="#">সম্পাদকীয়</a>
-    <span class="spacer"></span><a class="active" href="index.html">E-PAPER</a><a class="home" href="https://webshm.blogspot.com/">● LIVE NEWS</a>
-  </div></nav>
-  <div class="breaking"><b>● E-PAPER</b><span>বঙ্গনুর-এর ডিজিটাল সংবাদপত্র | পুরনো ও নতুন সংখ্যা এক জায়গায় পড়ুন</span></div>
-
-  <main>
-    <section class="hero">
-      <div><div class="eyebrow">BANGANUR DIGITAL EDITION</div><h1>ই-পেপার আর্কাইভ</h1><p>প্রতিটি সংখ্যা পড়ুন আধুনিক Flipbook অভিজ্ঞতায় অথবা PDF ডাউনলোড করুন।</p></div>
-      <div class="heroicon">📖</div>
-    </section>
-
-    <div class="sectionhead"><h2>📰 প্রকাশিত E-Paper</h2><span>FLIPBOOK COLLECTION</span></div>
-    <section class="grid" id="paperGrid">
-      <!-- নতুন সংখ্যা যোগ করতে নিচের JavaScript-এর editions তালিকায় একটি item যোগ করুন -->
-    </section>
-
-    <div class="note"><strong>প্রকাশকের জন্য:</strong> এই <code>index.html</code> এবং <code>flipbook.html</code> ফাইলের সঙ্গে PDF ফাইলগুলি একই ফোল্ডারে আপলোড করুন। যেমন: <code>demo1.pdf</code>, <code>demo2.pdf</code>। নতুন সংখ্যা যোগ করতে নিচের <code>editions</code> তালিকায় নাম, তারিখ ও PDF ফাইলের নাম লিখলেই হবে।</div>
-  </main>
-  <footer><strong>বঙ্গনুর | BANGANUR</strong><br>বাংলা ডিজিটাল নিউজ পোর্টাল · E-Paper Archive</footer>
-
-  <script>
-    // PDF ফাইল একই ফোল্ডারে রাখুন। নতুন সংখ্যা যোগ করতে এই তালিকায় আরেকটি object কপি করুন।
-    const editions = [
-      { title: "E-Paper Demo 01", date: "২১ নভেম্বর ২০২৬", pdf: "demo1.pdf", label: "DEMO 01" },
-      { title: "E-Paper Demo 02", date: "২০ নভেম্বর ২০২৬", pdf: "demo2.pdf", label: "DEMO 02" }
-    ];
-
-    const grid = document.getElementById("paperGrid");
-    grid.innerHTML = editions.map((paper, i) => {
-      const flipUrl = "flipbook.html?file=" + encodeURIComponent(paper.pdf) + "&title=" + encodeURIComponent(paper.title);
-      return `
-        <article class="paper">
-          <div class="cover"><span class="edition">${paper.label || "E-PAPER"}</span><div class="covericon">📰</div></div>
-          <div class="paperbody">
-            <h3>${paper.title}</h3><p>প্রকাশের তারিখ: ${paper.date}</p>
-            <div class="actions">
-              <a class="btn primary" href="${flipUrl}">📖 Read Flipbook</a>
-              <a class="btn secondary" href="${paper.pdf}" target="_blank" rel="noopener">👁 View PDF</a>
-              <a class="btn download" href="${paper.pdf}" download>⬇ Download</a>
-            </div>
-          </div>
-        </article>`;
-    }).join("");
-  </script>
-</body>
-</html>
+<div class="topline"><span><b>● ২৬ কার্তিক ১৪৩৩ বঙ্গাব্দ</b>　|　Saturday, November 21, 2026</span><span>বাংলা ডিজিটাল নিউজ পোর্টাল</span></div>
+<header class="masthead"><div class="mastinner">
+<a class="brand" href="../index.html"><div class="brandmark">ব</div><div><div class="brandtitle">বঙ্গনুর <small>BANGANUR</small></div><div class="tagline">BENGALI DIGITAL NEWS PORTAL</div></div></a>
+<div class="mast-ad">📰　BANGANUR E-PAPER EDITION<br><span style="font-size:10px;color:#718096;font-weight:500">সংবাদপত্র এখন আপনার হাতের মুঠোয়</span></div>
+</div></header>
+<nav class="nav"><div class="navinner">
+<a href="../index.html">হোম</a><a href="#">রাজ্য</a><a href="#">দেশ</a><a href="#">বিশ্ব</a><a href="#">সাহিত্য</a><a href="#">ধর্ম ও আধ্যাত্ম্য</a><a href="#">সম্পাদকীয়</a><a class="selected" href="index.html">E-PAPER</a><a class="right" href="../index.html">● LIVE NEWS</a>
+</div></nav>
+<div class="crumb">হোম　›　<b>E-PAPER ARCHIVE</b></div>
+<main>
+<section class="banner"><div class="bannertext"><div class="overline">BANGANUR · DIGITAL NEWSPAPER</div><h1>ই-পেপার আর্কাইভ</h1><p>আজকের সংবাদপত্র থেকে পুরনো সংখ্যা — সব এক জায়গায়।</p></div><div class="bannericon">🗞️</div></section>
+<div class="toolsrow"><div class="sectiontitle"><span class="dot"></span><h2>প্রকাশিত ই-পেপার</h2><small>READ • VIEW • DOWNLOAD</small></div><span class="count" id="count">02 EDITIONS</span></div>
+<section class="grid" id="paperGrid"></section>
+<div class="info"><strong>প্রকাশকের জন্য:</strong> নতুন PDF এই ফোল্ডারেই আপলোড করুন। তারপর নিচের <code>editions</code> তালিকায় নতুন সংখ্যার নাম, তারিখ ও PDF filename যোগ করলেই আর্কাইভে কার্ড দেখা যাবে।</div>
+</main>
+<footer><b>বঙ্গনুর | BANGANUR</b><br>বাংলা ডিজিটাল নিউজ পোর্টাল · E-Paper Archive</footer>
+<script>
+const editions=[
+ {title:"E-Paper Demo 01",date:"২১ নভেম্বর ২০২৬",pdf:"demo1.pdf",label:"DEMO 01"},
+ {title:"E-Paper Demo 02",date:"২০ নভেম্বর ২০২৬",pdf:"demo2.pdf",label:"DEMO 02"}
+];
+const grid=document.getElementById("paperGrid");
+document.getElementById("count").textContent=String(editions.length).padStart(2,"0")+" EDITIONS";
+grid.innerHTML=editions.map(p=>{
+ const url="flipbook.html?file="+encodeURIComponent(p.pdf)+"&title="+encodeURIComponent(p.title);
+ return `<article class="card">
+ <div class="cover"><span class="badge">${p.label||"E-PAPER"}</span><span class="date">${p.date}</span>
+ <div class="paper-preview"><div class="preview-head">বঙ্গনুর</div><div class="preview-lines"></div><div class="preview-lines short"></div><div class="preview-photo"></div><div class="preview-cols"><i></i><i></i></div><div class="preview-lines"></div><div class="preview-lines short"></div></div></div>
+ <div class="cardbody"><h3>${p.title}</h3><div class="meta">BANGANUR DIGITAL EDITION　•　${p.date}</div><div class="rule"></div>
+ <div class="actions"><a class="btn main" href="${url}">📖 Read Flipbook</a><a class="btn outline" href="${p.pdf}" target="_blank" rel="noopener">View PDF</a><a class="btn download" href="${p.pdf}" download>↓ PDF</a></div></div></article>`;
+}).join("");
+</script>
+</body></html>
