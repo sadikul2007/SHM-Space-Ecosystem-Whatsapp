@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BANGANUR (বঙ্গনূর) | Bengali Digital News Portal & Live TV</title>
   <meta name="description" content="বঙ্গনূর (BANGANUR) - পশ্চিমবঙ্গ, ভারত ও বিশ্বের সর্বশেষ সংবাদ, লাইভ টিভি, ই-পেপার, সাহিত্য, ধর্ম ও আধ্যাত্ম্য, ইতিহাস ও ঐতিহ্যের নির্ভরযোগ্য ডিজিটাল সংবাদ মাধ্যম।" />
+  <meta property="og:site_name" content="বঙ্গনূর (BANGANUR)" />
   <meta property="og:title" content="BANGANUR (বঙ্গনূর) - Bengali Digital News Portal" />
   <meta property="og:description" content="বাংলার কণ্ঠস্বর, বিশ্বজুড়ে সংবাদ — লাইভ টিভি ও ডিজিটাল নিউজ পোর্টাল।" />
   <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1260,6 +1262,7 @@
     function renderArticleView(articleId) {
       const article = appState.articles.find(a => a.id === articleId) || getPublishedArticles()[0];
       if (!article) return renderHomeView();
+      document.title = (article.title || "সংবাদ") + " | বঙ্গনূর (BANGANUR)";
       const related = getPublishedArticles().filter(a => a.id !== article.id).slice(0, 3);
       const paragraphs = (article.content || "").split("\n").filter(p => p.trim().length > 0);
       const safeId = escapeHtml(article.id);
@@ -1437,14 +1440,15 @@
     }
 
     function getArticleShareUrl(articleId) {
+      let siteParam = "";
       try {
-        const base = window.location.origin && window.location.origin !== "null"
-          ? window.location.origin + window.location.pathname
-          : "https://banganur.in/";
-        return base + "?article=" + encodeURIComponent(articleId);
-      } catch (e) {
-        return "https://banganur.in/?article=" + encodeURIComponent(articleId);
-      }
+        if (window.location.origin && window.location.origin !== "null" && window.location.protocol.startsWith("http")) {
+          siteParam = window.location.origin + window.location.pathname;
+        }
+      } catch (e) {}
+
+      const shareBase = WORKER_API_URL + "/share/" + encodeURIComponent(articleId);
+      return siteParam ? shareBase + "?site=" + encodeURIComponent(siteParam) : shareBase;
     }
 
     function copyTextToClipboard(text) {
