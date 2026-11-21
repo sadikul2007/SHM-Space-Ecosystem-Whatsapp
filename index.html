@@ -1039,19 +1039,19 @@
     function renderHomeView() {
       const published = getPublishedArticles();
 
-      // 1. প্রধান সংবাদ (Lead / Hero): Pick explicitly marked featured === 2, fallback to latest news (>0) or first article
+      // 1. প্রধান সংবাদ (Lead / Hero): Bit 2 (featured & 2)
       const hero =
-        published.find(a => Number(a.featured) === 2) ||
-        published.find(a => Number(a.featured) > 0) ||
+        published.find(a => (Number(a.featured) & 2) !== 0) ||
+        published.find(a => (Number(a.featured) & 1) !== 0) ||
         published[0];
 
-      // 2. ট্রেন্ডিং ও শীর্ষ সংবাদ (Top Stories): Pick featured === 3 first, then fill up to 4 from featured === 1 (excludes category-only 0)
-      const explicitTrending = published.filter(a => a.id !== hero?.id && Number(a.featured) === 3);
-      const fillTrending = published.filter(a => a.id !== hero?.id && Number(a.featured) === 1);
+      // 2. ট্রেন্ডিং ও শীর্ষ সংবাদ (Top Stories): Bit 4 (featured & 4), fallback fill from Bit 1
+      const explicitTrending = published.filter(a => a.id !== hero?.id && (Number(a.featured) & 4) !== 0);
+      const fillTrending = published.filter(a => a.id !== hero?.id && (Number(a.featured) & 4) === 0 && (Number(a.featured) & 1) !== 0);
       const trending = [...explicitTrending, ...fillTrending].slice(0, 4);
 
-      // 3. সর্বশেষ সংবাদ (Latest News): Only show articles selected for Latest/Lead/Trending (featured > 0), NOT category-only (0) like সাহিত্য
-      const markedLatest = published.filter(a => Number(a.featured) > 0);
+      // 3. সর্বশেষ সংবাদ (Latest News): Bit 1 (featured & 1) — excludes category-only (0) like সাহিত্য
+      const markedLatest = published.filter(a => (Number(a.featured) & 1) !== 0);
       const latestNews = markedLatest.length ? markedLatest.slice(0, 6) : published.slice(0, 6);
 
       const categorySections = [
