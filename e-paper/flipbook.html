@@ -1,21 +1,748 @@
+
 <!DOCTYPE html>
-<html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#063d32"><title>Banganur Flipbook</title>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#063d32">
+<title>Banganur Flipbook</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#e9eef2;color:#14283d;font-family:'Noto Sans Bengali',sans-serif}.top{background:#071a2a;color:white;padding:12px max(16px,calc((100% - 1160px)/2));display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.brand{font-weight:900;font-size:20px;color:#fff;text-decoration:none}.brand span{color:#ff982d}.back{background:#08765e;color:#fff;text-decoration:none;padding:8px 13px;border-radius:7px;font-size:12px;font-weight:800}.head{text-align:center;padding:19px 10px 7px}.head h1{font-size:22px;color:#005743;margin:0 0 3px}.head p{font-size:12px;color:#718096;margin:0}.bar{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;padding:13px}.btn{border:0;border-radius:7px;padding:9px 14px;background:#005743;color:#fff;font-weight:800;cursor:pointer;font-family:inherit}.btn.alt{background:white;border:1px solid #cbd5e1;color:#263b4f;text-decoration:none}.count{font:700 12px Roboto;color:#405267;min-width:85px;text-align:center}#viewer{max-width:1160px;min-height:440px;margin:0 auto;padding:0 15px;display:flex;justify-content:center;align-items:center;overflow:hidden}#book{margin:auto}.page{background:white;overflow:hidden;box-shadow:0 3px 12px #0002}.page canvas{display:block;width:100%;height:100%;object-fit:contain}.status{text-align:center;color:#667789;padding:25px}.error{background:#fff;border:1px solid #fecaca;color:#991b1b;padding:16px;border-radius:10px;max-width:650px;line-height:1.8}.foot{text-align:center;color:#718096;font-size:11px;padding:24px}@media(max-width:600px){#viewer{min-height:300px}.head h1{font-size:19px}.btn{font-size:12px;padding:8px 11px}}
-</style></head><body>
-<header class="top"><a class="brand" href="index.html">বঙ্গনুর <span>BANGANUR</span></a><a class="back" href="index.html">← E-Paper Archive</a></header>
-<div class="head"><h1 id="title">E-Paper Flipbook</h1><p>পাতা উল্টে সংবাদপত্র পড়ুন</p></div>
-<div class="bar"><button class="btn" id="prev">❮ Previous</button><span class="count" id="counter">Loading...</span><button class="btn" id="next">Next ❯</button><a class="btn alt" id="pdf" href="#" target="_blank">View PDF</a><button class="btn alt" id="full">⛶ Fullscreen</button></div>
-<div id="viewer"><div class="status" id="status">PDF লোড হচ্ছে...</div><div id="book"></div></div><div class="foot">BANGANUR · DIGITAL NEWSPAPER</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ background:#e9eef2;
+ color:#14283d;
+ font-family:'Noto Sans Bengali',sans-serif;
+ overflow-x:hidden;
+}
+
+.top{
+ background:#071a2a;
+ color:white;
+ padding:12px max(16px,calc((100% - 1160px)/2));
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ flex-wrap:wrap;
+}
+
+.brand{
+ font-weight:900;
+ font-size:20px;
+ color:#fff;
+ text-decoration:none;
+}
+
+.brand span{color:#ff982d}
+
+.back{
+ background:#08765e;
+ color:#fff;
+ text-decoration:none;
+ padding:8px 13px;
+ border-radius:7px;
+ font-size:12px;
+ font-weight:800;
+}
+
+.head{
+ text-align:center;
+ padding:18px 10px 7px;
+}
+
+.head h1{
+ font-size:22px;
+ color:#005743;
+ margin:0 0 3px;
+}
+
+.head p{
+ font-size:12px;
+ color:#718096;
+ margin:0;
+}
+
+/* TOOLBAR */
+
+.bar{
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ gap:8px;
+ flex-wrap:wrap;
+ padding:13px 10px;
+}
+
+.btn{
+ border:0;
+ border-radius:7px;
+ padding:9px 13px;
+ background:#005743;
+ color:#fff;
+ font-weight:800;
+ cursor:pointer;
+ font-family:inherit;
+ font-size:12px;
+ transition:.15s;
+}
+
+.btn:hover{background:#08765e}
+
+.btn:disabled{
+ opacity:.4;
+ cursor:not-allowed;
+}
+
+.btn.alt{
+ background:white;
+ border:1px solid #cbd5e1;
+ color:#263b4f;
+ text-decoration:none;
+}
+
+.btn.alt:hover{background:#edf5f1}
+
+.btn.zoom{
+ min-width:43px;
+ font:900 17px Roboto,sans-serif;
+}
+
+.zoom-level{
+ min-width:53px;
+ text-align:center;
+ font:800 12px Roboto,sans-serif;
+ color:#005743;
+ background:#e1f1e9;
+ border-radius:6px;
+ padding:9px 5px;
+}
+
+.count{
+ font:700 12px Roboto,sans-serif;
+ color:#405267;
+ min-width:65px;
+ text-align:center;
+}
+
+/* VIEWER */
+
+#viewer{
+ position:relative;
+ width:100%;
+ max-width:1160px;
+ min-height:440px;
+ margin:0 auto;
+ padding:10px 15px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ overflow:hidden;
+ background:#dce4e9;
+ border-radius:12px;
+ touch-action:none;
+}
+
+#zoomLayer{
+ width:100%;
+ min-height:420px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ transform-origin:center center;
+ transform:translate3d(0,0,0) scale(1);
+ will-change:transform;
+}
+
+#book{margin:auto}
+
+.page{
+ background:white;
+ overflow:hidden;
+ box-shadow:0 3px 12px #0002;
+}
+
+.page canvas{
+ display:block;
+ width:100%;
+ height:100%;
+ object-fit:contain;
+}
+
+/* STATUS */
+
+.status{
+ text-align:center;
+ color:#667789;
+ padding:25px;
+}
+
+.error{
+ background:#fff;
+ border:1px solid #fecaca;
+ color:#991b1b;
+ padding:16px;
+ border-radius:10px;
+ max-width:650px;
+ line-height:1.8;
+}
+
+/* HELP */
+
+.zoom-help{
+ max-width:850px;
+ margin:15px auto 0;
+ padding:11px 15px;
+ background:#fff;
+ border:1px solid #dce5eb;
+ border-radius:8px;
+ color:#64748b;
+ font-size:11px;
+ text-align:center;
+ line-height:1.9;
+}
+
+.zoom-help b{color:#005743}
+
+.foot{
+ text-align:center;
+ color:#718096;
+ font-size:11px;
+ padding:24px;
+}
+
+@media(max-width:600px){
+
+ .top{padding:11px 12px}
+
+ .brand{font-size:17px}
+
+ .head h1{font-size:19px}
+
+ .bar{gap:6px;padding:10px 5px}
+
+ .btn{font-size:11px;padding:9px 9px}
+
+ .btn.zoom{min-width:38px}
+
+ #viewer{
+  min-height:320px;
+  padding:5px;
+  border-radius:0;
+ }
+
+ #zoomLayer{min-height:300px}
+
+ .zoom-help{margin:12px;padding:10px}
+
+}
+</style>
+</head>
+
+<body>
+
+<header class="top">
+ <a class="brand" href="index.html">
+  বঙ্গনুর <span>BANGANUR</span>
+ </a>
+ <a class="back" href="index.html">← E-Paper Archive</a>
+</header>
+
+<div class="head">
+ <h1 id="title">E-Paper Flipbook</h1>
+ <p>পাতা উল্টে সংবাদপত্র পড়ুন</p>
+</div>
+
+<!-- TOOLBAR -->
+
+<div class="bar">
+
+ <button class="btn" id="prev">❮ Previous</button>
+
+ <span class="count" id="counter">Loading...</span>
+
+ <button class="btn" id="next">Next ❯</button>
+
+ <button class="btn zoom" id="zoomOut" title="Zoom Out">−</button>
+
+ <span class="zoom-level" id="zoomLevel">100%</span>
+
+ <button class="btn zoom" id="zoomIn" title="Zoom In">+</button>
+
+ <button class="btn alt" id="resetZoom">↺ Reset</button>
+
+ <button class="btn alt" id="fitZoom">⊡ Fit</button>
+
+ <a class="btn alt" id="pdf" href="#" target="_blank" rel="noopener">
+  PDF
+ </a>
+
+ <button class="btn alt" id="full">⛶ Fullscreen</button>
+
+</div>
+
+<!-- FLIPBOOK -->
+
+<div id="viewer">
+
+ <div id="zoomLayer">
+  <div class="status" id="status">PDF লোড হচ্ছে...</div>
+  <div id="book"></div>
+ </div>
+
+</div>
+
+<div class="zoom-help">
+ <b>ZOOM:</b>
+ + / − বাটন দিয়ে বড় বা ছোট করুন।
+ মাউসের Scroll দিয়ে Zoom করুন।
+ মোবাইলে দুই আঙুল দিয়ে Zoom করুন।
+ Zoom অবস্থায় Mouse / Finger দিয়ে পৃষ্ঠা সরান।
+</div>
+
+<div class="foot">
+ BANGANUR · DIGITAL NEWSPAPER
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
+
 <script>
-(async()=>{const q=new URLSearchParams(location.search),file=q.get("file")||"demo1.pdf",title=q.get("title")||"E-Paper Flipbook";document.getElementById("title").textContent=title;document.getElementById("pdf").href=file;
-const status=document.getElementById("status"),book=document.getElementById("book"),viewer=document.getElementById("viewer");
-try{if(!window.pdfjsLib||!window.St)throw Error("Flipbook library load হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।");pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";const pdf=await pdfjsLib.getDocument(file).promise,pages=[];
-for(let n=1;n<=pdf.numPages;n++){status.textContent=`পৃষ্ঠা তৈরি হচ্ছে ${n}/${pdf.numPages}`;const page=await pdf.getPage(n),v=page.getViewport({scale:1.2}),canvas=document.createElement("canvas");canvas.width=Math.ceil(v.width);canvas.height=Math.ceil(v.height);await page.render({canvasContext:canvas.getContext("2d"),viewport:v}).promise;const d=document.createElement("div");d.className="page";d.appendChild(canvas);pages.push(d)}
-status.remove();const flip=new St.PageFlip(book,{width:550,height:760,size:"stretch",minWidth:280,maxWidth:550,minHeight:380,maxHeight:760,maxShadowOpacity:.35,showCover:false,mobileScrollSupport:true,usePortrait:true,autoSize:true});flip.loadFromHTML(pages);
-const c=document.getElementById("counter"),update=()=>{c.textContent=(flip.getCurrentPageIndex()+1)+" / "+pdf.numPages;document.getElementById("prev").disabled=flip.getCurrentPageIndex()===0;document.getElementById("next").disabled=flip.getCurrentPageIndex()>=pdf.numPages-1};flip.on("flip",update);update();document.getElementById("prev").onclick=()=>flip.flipPrev();document.getElementById("next").onclick=()=>flip.flipNext();document.getElementById("full").onclick=()=>document.fullscreenElement?document.exitFullscreen():viewer.requestFullscreen?.();
-}catch(e){status.innerHTML=`<div class="error"><b>PDF খোলা যাচ্ছে না।</b><br>PDF ফাইলটি একই ফোল্ডারে আছে এবং filename সঠিক কি না পরীক্ষা করুন।<br><small>${e.message}</small><br><a href="${file}" target="_blank">PDF সরাসরি খুলুন</a></div>`}
+(async()=>{
+
+const q=new URLSearchParams(location.search);
+
+const file=q.get("file")||"demo1.pdf";
+const title=q.get("title")||"E-Paper Flipbook";
+
+const status=document.getElementById("status");
+const book=document.getElementById("book");
+const viewer=document.getElementById("viewer");
+const zoomLayer=document.getElementById("zoomLayer");
+
+document.getElementById("title").textContent=title;
+document.getElementById("pdf").href=file;
+
+/* ZOOM SETTINGS */
+
+let zoom=1;
+let tx=0;
+let ty=0;
+
+const MIN_ZOOM=1;
+const MAX_ZOOM=4;
+const STEP=.25;
+
+let flip=null;
+let pointers=new Map();
+let pinchStart=null;
+let dragStart=null;
+
+function applyZoom(){
+
+ zoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,zoom));
+
+ if(zoom<=1){
+  zoom=1;
+  tx=0;
+  ty=0;
+ }
+
+ zoomLayer.style.transform=
+ `translate3d(${tx}px,${ty}px,0) scale(${zoom})`;
+
+ document.getElementById("zoomLevel").textContent=
+ Math.round(zoom*100)+"%";
+
+ document.getElementById("zoomIn").disabled=zoom>=MAX_ZOOM;
+ document.getElementById("zoomOut").disabled=zoom<=MIN_ZOOM;
+}
+
+function zoomAt(newZoom,x,y){
+
+ newZoom=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,newZoom));
+
+ const rect=viewer.getBoundingClientRect();
+
+ const cx=x-rect.left-rect.width/2;
+ const cy=y-rect.top-rect.height/2;
+
+ const ratio=newZoom/zoom;
+
+ tx=cx-(cx-tx)*ratio;
+ ty=cy-(cy-ty)*ratio;
+
+ zoom=newZoom;
+
+ if(zoom===1){
+  tx=0;
+  ty=0;
+ }
+
+ applyZoom();
+}
+
+function zoomCenter(newZoom){
+
+ const rect=viewer.getBoundingClientRect();
+
+ zoomAt(
+  newZoom,
+  rect.left+rect.width/2,
+  rect.top+rect.height/2
+ );
+
+}
+
+function resetZoom(){
+ zoom=1;
+ tx=0;
+ ty=0;
+ applyZoom();
+}
+
+document.getElementById("zoomIn").onclick=()=>{
+ zoomCenter(zoom+STEP);
+};
+
+document.getElementById("zoomOut").onclick=()=>{
+ zoomCenter(zoom-STEP);
+};
+
+document.getElementById("resetZoom").onclick=resetZoom;
+
+document.getElementById("fitZoom").onclick=resetZoom;
+
+/* MOUSE WHEEL ZOOM */
+
+viewer.addEventListener("wheel",e=>{
+
+ e.preventDefault();
+
+ const direction=e.deltaY<0?1:-1;
+
+ zoomAt(
+  zoom+(direction*STEP),
+  e.clientX,
+  e.clientY
+ );
+
+},{passive:false});
+
+/* MOUSE DRAG + MOBILE PINCH */
+
+function distance(a,b){
+ return Math.hypot(
+  a.clientX-b.clientX,
+  a.clientY-b.clientY
+ );
+}
+
+function midpoint(a,b){
+ return {
+  x:(a.clientX+b.clientX)/2,
+  y:(a.clientY+b.clientY)/2
+ };
+}
+
+viewer.addEventListener("pointerdown",e=>{
+
+ pointers.set(e.pointerId,{
+  clientX:e.clientX,
+  clientY:e.clientY
+ });
+
+ if(pointers.size===1 && zoom>1){
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  dragStart={
+   x:e.clientX,
+   y:e.clientY,
+   tx,
+   ty
+  };
+
+  viewer.setPointerCapture(e.pointerId);
+ }
+
+ if(pointers.size===2){
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  dragStart=null;
+
+  const p=[...pointers.values()];
+
+  pinchStart={
+   distance:distance(p[0],p[1]),
+   zoom:zoom,
+   tx:tx,
+   ty:ty,
+   midpoint:midpoint(p[0],p[1])
+  };
+
+ }
+
+},true);
+
+viewer.addEventListener("pointermove",e=>{
+
+ if(!pointers.has(e.pointerId))return;
+
+ pointers.set(e.pointerId,{
+  clientX:e.clientX,
+  clientY:e.clientY
+ });
+
+ if(pointers.size===2 && pinchStart){
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const p=[...pointers.values()];
+
+  const newDistance=distance(p[0],p[1]);
+  const mid=midpoint(p[0],p[1]);
+
+  const newZoom=Math.max(
+   MIN_ZOOM,
+   Math.min(MAX_ZOOM,
+    pinchStart.zoom*(newDistance/pinchStart.distance)
+   )
+  );
+
+  const rect=viewer.getBoundingClientRect();
+
+  const oldX=pinchStart.midpoint.x-rect.left-rect.width/2;
+  const oldY=pinchStart.midpoint.y-rect.top-rect.height/2;
+
+  const newX=mid.x-rect.left-rect.width/2;
+  const newY=mid.y-rect.top-rect.height/2;
+
+  const ratio=newZoom/pinchStart.zoom;
+
+  tx=newX-(oldX-pinchStart.tx)*ratio;
+  ty=newY-(oldY-pinchStart.ty)*ratio;
+
+  zoom=newZoom;
+
+  if(zoom===1){
+   tx=0;
+   ty=0;
+  }
+
+  applyZoom();
+
+  return;
+ }
+
+ if(pointers.size===1 && zoom>1 && dragStart){
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  tx=dragStart.tx+(e.clientX-dragStart.x);
+  ty=dragStart.ty+(e.clientY-dragStart.y);
+
+  applyZoom();
+
+ }
+
+},true);
+
+function removePointer(e){
+
+ pointers.delete(e.pointerId);
+
+ if(pointers.size<2)pinchStart=null;
+
+ if(pointers.size===0)dragStart=null;
+
+}
+
+viewer.addEventListener("pointerup",removePointer,true);
+viewer.addEventListener("pointercancel",removePointer,true);
+viewer.addEventListener("lostpointercapture",removePointer,true);
+
+/* FULLSCREEN */
+
+document.getElementById("full").onclick=async()=>{
+
+ try{
+
+  if(!document.fullscreenElement){
+
+   await viewer.requestFullscreen();
+
+  }else{
+
+   await document.exitFullscreen();
+
+  }
+
+ }catch(e){
+  console.log("Fullscreen unavailable",e);
+ }
+
+};
+
+document.addEventListener("fullscreenchange",()=>{
+ setTimeout(resetZoom,150);
+});
+
+/* KEYBOARD ZOOM */
+
+document.addEventListener("keydown",e=>{
+
+ if(e.target.tagName==="INPUT")return;
+
+ if(e.key==="+" || e.key==="="){
+  zoomCenter(zoom+STEP);
+ }
+
+ if(e.key==="-"){
+  zoomCenter(zoom-STEP);
+ }
+
+ if(e.key==="0"){
+  resetZoom();
+ }
+
+ if(e.key==="ArrowLeft" && flip){
+  flip.flipPrev();
+ }
+
+ if(e.key==="ArrowRight" && flip){
+  flip.flipNext();
+ }
+
+});
+
+/* PDF LOADING */
+
+try{
+
+ if(!window.pdfjsLib || !window.St){
+  throw Error("Flipbook library load হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করুন।");
+ }
+
+ pdfjsLib.GlobalWorkerOptions.workerSrc=
+ "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+ const pdf=await pdfjsLib.getDocument(file).promise;
+
+ const pages=[];
+
+ for(let n=1;n<=pdf.numPages;n++){
+
+  status.textContent=`পৃষ্ঠা তৈরি হচ্ছে ${n}/${pdf.numPages}`;
+
+  const page=await pdf.getPage(n);
+
+  const viewport=page.getViewport({scale:1.5});
+
+  const canvas=document.createElement("canvas");
+
+  canvas.width=Math.ceil(viewport.width);
+  canvas.height=Math.ceil(viewport.height);
+
+  const context=canvas.getContext("2d");
+
+  await page.render({
+   canvasContext:context,
+   viewport:viewport
+  }).promise;
+
+  const div=document.createElement("div");
+
+  div.className="page";
+  div.appendChild(canvas);
+
+  pages.push(div);
+
+ }
+
+ status.remove();
+
+ flip=new St.PageFlip(book,{
+
+  width:550,
+  height:760,
+
+  size:"stretch",
+
+  minWidth:280,
+  maxWidth:550,
+
+  minHeight:380,
+  maxHeight:760,
+
+  maxShadowOpacity:.35,
+
+  showCover:false,
+
+  mobileScrollSupport:false,
+
+  usePortrait:true,
+
+  autoSize:true
+
+ });
+
+ flip.loadFromHTML(pages);
+
+ /* PAGE COUNTER */
+
+ const counter=document.getElementById("counter");
+
+ function update(){
+
+  const current=flip.getCurrentPageIndex();
+
+  counter.textContent=(current+1)+" / "+pdf.numPages;
+
+  document.getElementById("prev").disabled=current===0;
+
+  document.getElementById("next").disabled=
+  current>=pdf.numPages-1;
+
+ }
+
+ flip.on("flip",update);
+
+ update();
+
+ document.getElementById("prev").onclick=()=>{
+  flip.flipPrev();
+ };
+
+ document.getElementById("next").onclick=()=>{
+  flip.flipNext();
+ };
+
+ applyZoom();
+
+}catch(e){
+
+ status.innerHTML=`
+ <div class="error">
+ <b>PDF খোলা যাচ্ছে না।</b><br>
+ PDF ফাইলটি একই ফোল্ডারে আছে এবং filename সঠিক কি না পরীক্ষা করুন।
+ <br><small>${e.message}</small>
+ <br><a href="${file}" target="_blank">PDF সরাসরি খুলুন</a>
+ </div>`;
+
+}
+
 })();
-</script></body></html>
+</script>
+
+</body>
+</html>
