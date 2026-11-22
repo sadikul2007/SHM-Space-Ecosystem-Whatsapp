@@ -145,7 +145,6 @@
             <a id="top-wa-link" href="#" aria-label="WhatsApp" class="hover:text-emerald-400 transition"><i class="fa-brands fa-whatsapp"></i></a>
           </div>
 
-          <!-- E-PAPER: Only # link (No in-page content) -->
           <a href="https://sadikul2007.github.io/SHM-Space-Ecosystem-Whatsapp/e-paper/index.html" class="bg-emeraldMid hover:bg-emerald-600 text-white px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition shadow-sm">
             <i class="fa-regular fa-newspaper"></i>
             <span class="font-inter">E-PAPER</span>
@@ -165,13 +164,13 @@
       <div class="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-5 flex flex-col lg:flex-row items-center justify-between gap-4">
         <div class="flex items-center justify-between w-full lg:w-auto">
           <button data-nav="home" class="flex items-center gap-3 text-left group focus:outline-none">
-           <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden shadow-md border-2 border-amber-500/70 shrink-0 group-hover:scale-105 transition">
-  <img 
-    src="https://scontent.frdp6-1.fna.fbcdn.net/v/t39.30808-1/269968352_481056993675558_9171041226746451264_n.jpg?stp=dst-jpg_tt6&cstp=mx898x909&ctp=s200x200&_nc_cat=104&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=bJNLCY_V54wQ7kNvwG869zZ&_nc_oc=AdoIJYLj2FpWgIctCG-Jgj_ZlTZ3zLhHh5phNQxD6C9Oa8gAPBf0uK-5F15VyPpgXcI&_nc_zt=24&_nc_ht=scontent.frdp6-1.fna&_nc_gid=nPcEcjOzmI4BedLP7XvQ5A&_nc_ss=7c2a8&oh=00_AQTJ_T0Sji0NgKjpILu_L4-GkJBdy5m2y40L_J1Tad4oig&oe=6B076A89" 
-    alt="বঙ্গনূর Banganur Logo"
-    class="w-full h-full object-contain"
-  >
-</div>
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden shadow-md border-2 border-amber-500/70 shrink-0 group-hover:scale-105 transition">
+              <img 
+                src="https://scontent.frdp6-1.fna.fbcdn.net/v/t39.30808-1/269968352_481056993675558_9171041226746451264_n.jpg?stp=dst-jpg_tt6&cstp=mx898x909&ctp=s200x200&_nc_cat=104&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=bJNLCY_V54wQ7kNvwG869zZ&_nc_oc=AdoIJYLj2FpWgIctCG-Jgj_ZlTZ3zLhHh5phNQxD6C9Oa8gAPBf0uK-5F15VyPpgXcI&_nc_zt=24&_nc_ht=scontent.frdp6-1.fna&_nc_gid=nPcEcjOzmI4BedLP7XvQ5A&_nc_ss=7c2a8&oh=00_AQTJ_T0Sji0NgKjpILu_L4-GkJBdy5m2y40L_J1Tad4oig&oe=6B076A89" 
+                alt="বঙ্গনূর Banganur Logo"
+                class="w-full h-full object-contain"
+              >
+            </div>
             <div>
               <div class="flex items-baseline gap-2">
                 <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-emeraldDeep leading-none">বঙ্গনূর</h1>
@@ -287,7 +286,7 @@
               <li><button data-nav="category" data-param="ধর্ম ও আধ্যাত্ম্য" class="hover:text-amber-400 transition">ধর্ম ও আধ্যাত্ম্য</button></li>
               <li><button data-nav="category" data-param="ইতিহাস ও ঐতিহ্য" class="hover:text-amber-400 transition">ইতিহাস ও ঐতিহ্য</button></li>
               <li><button data-nav="category" data-param="সম্পাদকীয়" class="hover:text-amber-400 transition">সম্পাদকীয়</button></li>
-              <li> <a href="https://sadikul2007.github.io/SHM-Space-Ecosystem-Whatsapp/e-paper/index.html" target="_blank" rel="noopener noreferrer" class="hover:text-amber-400 transition font-inter">E-PAPER</a></li>
+              <li><a href="https://sadikul2007.github.io/SHM-Space-Ecosystem-Whatsapp/e-paper/index.html" target="_blank" rel="noopener noreferrer" class="hover:text-amber-400 transition font-inter">E-PAPER</a></li>
             </ul>
           </div>
 
@@ -388,6 +387,7 @@
       return "";
     }
 
+    // Fallback SVG thumbnail when an article from Admin Panel has no image URL
     function createEditorialSVG(theme, label = "বঙ্গনূর সংবাদ") {
       const safeLabel = escapeHtml(label);
       const palettes = {
@@ -413,74 +413,34 @@
           <circle cx="120" cy="390" r="190" fill="#ffffff" opacity="0.06"/>
           <path d="M0 340 Q 220 270, 440 340 T 800 310 L 800 450 L 0 450 Z" fill="#000000" opacity="0.22"/>
           <rect x="44" y="42" width="170" height="34" rx="6" fill="${accent}"/>
-          <text x="129" y="64" font-family="sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="middle">BANGANUR TV</text>
+          <text x="129" y="64" font-family="sans-serif" font-size="15" font-weight="bold" fill="#0F172A" text-anchor="middle">BANGANUR</text>
           <text x="44" y="245" font-family="sans-serif" font-size="40" font-weight="bold" fill="#ffffff">${safeLabel}</text>
-          <text x="44" y="290" font-family="sans-serif" font-size="18" fill="#E2E8F0" opacity="0.9">বঙ্গনূর ডিজিটাল নিউজ ডেস্ক • কলকাতা</text>
+          <text x="44" y="290" font-family="sans-serif" font-size="18" fill="#E2E8F0" opacity="0.9">বঙ্গনূর ডিজিটাল নিউজ ডেস্ক</text>
         </svg>`;
       return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
     }
 
+    // Clean initial state — NO hardcoded demo articles or demo breaking news
     const appState = {
+      isLoading: true,
+      loadError: false,
       settings: {
         bengaliDate: "২৬ কার্তিক ১৪৩৩ বঙ্গাব্দ",
         socials: { facebook: "#", youtube: "#", whatsapp: "#" },
-        homepage: { showLiveTV: true, showNamazWidget: true, heroArticleId: "news-1" }
+        homepage: { showLiveTV: true, showNamazWidget: true, heroArticleId: null }
       },
       liveTV: {
-        active: true,
+        active: false,
         platform: "youtube",
-        url: "https://www.youtube.com/watch?v=jfKfPfyJRdk",
-        title: "বঙ্গনূর নিউজ স্টুডিও লাইভ: বাংলার প্রাইম টাইম সংবাদ ও বিশেষ আলোচনা",
-        description: "বঙ্গনূর ভবন স্টুডিও থেকে সরাসরি সম্প্রচার — রাজ্য, দেশ, সাহিত্য ও সমসাময়িক ঘটনাবলীর বিশেষ বিশ্লেষণ।"
+        url: "",
+        title: "বঙ্গনূর নিউজ স্টুডিও লাইভ",
+        description: ""
       },
-      breakingNews: [
-        { id: "bn-1", text: "কলকাতা ও উত্তর ২৪ পরগনাসহ দক্ষিণবঙ্গে শীতের আমেজ, তাপমাত্রা নামল ১৮ ডিগ্রির ঘরে", articleId: "news-1", active: true },
-        { id: "bn-2", text: "দেগঙ্গা ও বসিরহাট মহকুমার গ্রামীণ সড়ক সংস্কারে নতুন প্রকল্পের অনুমোদন", articleId: "news-2", active: true }
-      ],
+      breakingNews: [],
       categories: [
         "রাজ্য", "দেশ", "বিশ্ব", "সাহিত্য", "ধর্ম ও আধ্যাত্ম্য", "ইতিহাস ও ঐতিহ্য", "সম্পাদকীয়", "অন্যান্য"
       ],
-      articles: [
-        {
-          id: "news-1",
-          title: " ",
-          subheadline: "আগামী ৪৮ ঘণ্টায় আরও ২ থেকে ৩ ডিগ্রি সেলসিয়াস কমতে পারে রাতের পারদ",
-          category: "রাজ্য",
-          author: "মুহাম্মাদ আব্দুল মাতিন",
-          date: "১২ নভেম্বর, ২০২৬ • দুপুর ১:১৫",
-          status: "published",
-          featured: 2,
-          image: createEditorialSVG("emerald", " "),
-          summary: "কার্তিকের শেষ লগ্নেই বঙ্গে শীতের আগমনী বার্তা। আলিপুর আবহাওয়া দপ্তর জানিয়েছে, উত্তর-পশ্চিম দিক থেকে শুষ্ক শীতল হাওয়া রাজ্যে প্রবেশ করায় রাতের তাপমাত্রা স্বাভাবিকের চেয়ে নিচে নেমেছে।",
-          content: "কলকাতা: কার্তিকের শেষ সপ্তাহেই রাজ্যজুড়ে অনুভূত হচ্ছে মনোরম শীতের আমেজ। ভোরের দিকে হালকা কুয়াশা এবং রাতের তাপমাত্রা কমায় শহর কলকাতা থেকে শুরু করে উত্তর ২৪ পরগনা ও জেলায় জেলায় শীতের আমেজ ছড়িয়ে পড়েছে।"
-        },
-        {
-          id: "news-2",
-          title: "দেগঙ্গা, হাড়োয়া ও বসিরহাট অঞ্চলে যোগাযোগ ব্যবস্থার আমূল পরিবর্তন, নতুন সড়ক ও সেতু প্রকল্পের সূচনা",
-          subheadline: "উপকৃত হবেন উত্তর ২৪ পরগনা জেলার লক্ষাধিক মানুষ",
-          category: "রাজ্য",
-          author: "তরিকুল ইসলাম",
-          date: "১২ নভেম্বর, ২০২৬ • সকাল ১১:৪০",
-          status: "published",
-          featured: 1,
-          image: createEditorialSVG("navy", "গ্রামীণ পরিকাঠামো উন্নয়ন"),
-          summary: "উত্তর ২৪ পরগনার প্রত্যন্ত এলাকার সঙ্গে কলকাতার সরাসরি সড়ক যোগাযোগ আরও মসৃণ করতে নতুন কংক্রিট সেতু ও প্রশস্ত রাস্তার কাজের সূচনা হলো।",
-          content: "দেগঙ্গা: উত্তর ২৪ পরগনা জেলার গ্রামীণ অর্থনীতি ও যোগাযোগ ব্যবস্থাকে আরও গতিশীল করতে নতুন সড়ক ও সেতু সংস্কার প্রকল্পের কাজ শুরু হয়েছে।"
-        },
-        {
-          id: "news-9",
-          title: "মানবতার কল্যাণে আধ্যাত্মিক চর্চা ও নৈতিক মূল্যবোধের গুরুত্ব",
-          subheadline: "ধর্মীয় সম্প্রীতি ও আত্মশুদ্ধির পথনির্দেশ",
-          category: "ধর্ম ও আধ্যাত্ম্য",
-          author: "মাওলানা আব্দুল করিম",
-          date: "১২ নভেম্বর, ২০২৬ • সকাল ৯:০০",
-          status: "published",
-          featured: 0,
-          image: createEditorialSVG("spiritual", "ধর্ম ও আধ্যাত্ম্য"),
-          summary: "আধুনিক ব্যস্ত জীবনে মানসিক প্রশান্তি ও সামাজিক সম্প্রীতি বজায় রাখতে ধর্মীয় শিক্ষা ও আধ্যাত্মিক চর্চার ভূমিকা অপরিসীম।",
-          content: "মানুষের জীবনে প্রকৃত শান্তি আসে নৈতিকতা, সহমর্মিতা ও আত্মশুদ্ধির মাধ্যমে। সকল ধর্মই মানবসেবা, সত্যবাদিতা ও পারস্পরিক শ্রদ্ধাবোধের শিক্ষা দেয়।"
-        }
-      ],
+      articles: [],
       ads: {
         "header": {
           placement: "header",
@@ -648,7 +608,7 @@
             ${escapeHtml(item.label)}
           </button>
         `).join("") + `
-          <a href="#" class="px-2.5 py-1 rounded-md transition font-inter text-xs bg-white/10 text-amber-300 font-bold">E-PAPER</a>
+          <a href="https://sadikul2007.github.io/SHM-Space-Ecosystem-Whatsapp/e-paper/index.html" class="px-2.5 py-1 rounded-md transition font-inter text-xs bg-white/10 text-amber-300 font-bold">E-PAPER</a>
         `;
       }
 
@@ -668,11 +628,18 @@
     function renderBreakingTicker() {
       const track = document.getElementById("breaking-ticker-track");
       if (!track) return;
+
+      if (appState.isLoading) {
+        track.innerHTML = `<span class="text-slate-500">সর্বশেষ ব্রেকিং নিউজ লোড হচ্ছে...</span>`;
+        return;
+      }
+
       const activeItems = appState.breakingNews.filter(b => b.active !== false && b.active !== 0);
       if (!activeItems.length) {
         track.innerHTML = "<span>বঙ্গনূর ডিজিটাল নিউজ পোর্টালে আপনাকে স্বাগতম — সত্য ও নিরপেক্ষ সংবাদের বিশ্বস্ত মাধ্যম।</span>";
         return;
       }
+
       const doubled = [...activeItems, ...activeItems];
       track.innerHTML = doubled.map(b => {
         const artId = b.articleId || b.article_id || "";
@@ -693,7 +660,6 @@
       const safeLink = sanitizeUrl(ad.link_url);
       const safeTitle = escapeHtml(ad.title || "বিজ্ঞাপন");
 
-      // If Admin uploaded an Ad Image, display the Image Banner (with optional link)
       if (safeImg) {
         const heightClass =
           placement === "header" ? "max-h-[90px]" :
@@ -708,7 +674,6 @@
         return `<div class="block w-full">${imgHtml}</div>`;
       }
 
-      // Default Fallback Text Banner (if no image is set yet)
       const wrapperOpen = safeLink
         ? `<a href="${escapeHtml(safeLink)}" target="_blank" rel="noopener noreferrer"`
         : `<div data-policy="ads" role="button" tabindex="0"`;
@@ -1036,8 +1001,58 @@
       return safe || createEditorialSVG("emerald", article.category || "বঙ্গনূর");
     }
 
+    // Loading skeleton shown while fetching live data from Cloudflare Worker
+    function renderLoadingSkeleton() {
+      return `
+        <div class="space-y-8 animate-pulse">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-7 bg-white rounded-2xl overflow-hidden border border-slate-200 p-4 space-y-4">
+              <div class="aspect-video bg-slate-200 rounded-xl"></div>
+              <div class="h-7 bg-slate-200 rounded w-5/6"></div>
+              <div class="h-4 bg-slate-200 rounded w-full"></div>
+              <div class="h-4 bg-slate-200 rounded w-2/3"></div>
+            </div>
+            <div class="lg:col-span-5 space-y-4">
+              <div class="h-6 bg-slate-200 rounded w-1/2"></div>
+              ${[1, 2, 3, 4].map(() => `
+                <div class="bg-white rounded-xl p-3 border border-slate-200 flex gap-3.5">
+                  <div class="w-28 h-20 bg-slate-200 rounded-lg shrink-0"></div>
+                  <div class="flex-1 space-y-2 py-1">
+                    <div class="h-3 bg-slate-200 rounded w-1/3"></div>
+                    <div class="h-4 bg-slate-200 rounded w-full"></div>
+                    <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+          <div class="text-center py-4 text-sm font-semibold text-emeraldDeep flex items-center justify-center gap-2">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+            <span>সর্বশেষ সংবাদ লোড হচ্ছে...</span>
+          </div>
+        </div>
+      `;
+    }
+
     function renderHomeView() {
+      if (appState.isLoading) {
+        return renderLoadingSkeleton();
+      }
+
       const published = getPublishedArticles();
+
+      if (appState.loadError && !published.length) {
+        return `
+          <div class="bg-white rounded-2xl p-10 text-center border border-slate-200 shadow-sm my-8">
+            <i class="fa-solid fa-wifi text-4xl text-amber-500 mb-3"></i>
+            <h2 class="text-xl font-extrabold text-navyDark">সংবাদ লোড করতে সমস্যা হয়েছে</h2>
+            <p class="text-sm text-slate-600 mt-2">অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ যাচাই করে পুনরায় চেষ্টা করুন।</p>
+            <button data-action="retry-load" class="mt-5 bg-emeraldDeep hover:bg-emeraldMid text-white font-bold text-sm px-5 py-2.5 rounded-xl transition">
+              <i class="fa-solid fa-rotate-right mr-1.5"></i> পুনরায় চেষ্টা করুন
+            </button>
+          </div>
+        `;
+      }
 
       // 1. প্রধান সংবাদ (Lead / Hero): Bit 2 (featured & 2)
       const hero =
@@ -1050,7 +1065,7 @@
       const fillTrending = published.filter(a => a.id !== hero?.id && (Number(a.featured) & 4) === 0 && (Number(a.featured) & 1) !== 0);
       const trending = [...explicitTrending, ...fillTrending].slice(0, 4);
 
-      // 3. সর্বশেষ সংবাদ (Latest News): Bit 1 (featured & 1) — excludes category-only (0) like সাহিত্য
+      // 3. সর্বশেষ সংবাদ (Latest News): Bit 1 (featured & 1)
       const markedLatest = published.filter(a => (Number(a.featured) & 1) !== 0);
       const latestNews = markedLatest.length ? markedLatest.slice(0, 6) : published.slice(0, 6);
 
@@ -1100,7 +1115,7 @@
                 </h3>
                 <span class="font-inter text-xs font-bold text-emeraldMid">TOP STORIES</span>
               </div>
-              ${trending.map(item => `
+              ${trending.length ? trending.map(item => `
                 <article data-open-article="${escapeHtml(item.id)}" class="bg-white rounded-xl p-3 shadow-sm border border-slate-200 hover:border-emeraldMid transition flex gap-3.5 cursor-pointer group">
                   <img src="${escapeHtml(getArticleImage(item))}" alt="${escapeHtml(item.title)}" class="w-28 h-20 sm:w-32 sm:h-22 rounded-lg object-cover shrink-0 bg-slate-100" />
                   <div class="flex-1 min-w-0 flex flex-col justify-between">
@@ -1113,11 +1128,21 @@
                     <span class="text-[11px] text-slate-400 mt-1">${escapeHtml(item.date || "")}</span>
                   </div>
                 </article>
-              `).join("")}
+              `).join("") : `
+                <div class="bg-white rounded-xl p-6 text-center border border-slate-200 text-sm text-slate-500">
+                  শীঘ্রই আরও শীর্ষ সংবাদ যুক্ত হবে।
+                </div>
+              `}
             </div>
           </div>
         </section>
-        ` : ""}
+        ` : `
+        <section class="mb-10 bg-white rounded-2xl p-10 text-center border border-slate-200 shadow-sm">
+          <i class="fa-regular fa-newspaper text-4xl text-emeraldMid mb-3"></i>
+          <h2 class="text-xl font-extrabold text-navyDark">এখনো কোনো সংবাদ প্রকাশিত হয়নি</h2>
+          <p class="text-sm text-slate-500 mt-1">অ্যাডমিন প্যানেল থেকে নতুন সংবাদ প্রকাশ করলেই এখানে দেখা যাবে।</p>
+        </section>
+        `}
 
         ${renderLiveTVSection()}
 
@@ -1134,7 +1159,7 @@
             </div>
 
             <div class="space-y-4">
-              ${latestNews.map(news => `
+              ${latestNews.length ? latestNews.map(news => `
                 <article data-open-article="${escapeHtml(news.id)}" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md hover:border-emeraldMid transition flex flex-col sm:flex-row gap-4 cursor-pointer group">
                   <div class="sm:w-52 aspect-video sm:aspect-[16/10] rounded-xl overflow-hidden shrink-0 bg-slate-100">
                     <img src="${escapeHtml(getArticleImage(news))}" alt="${escapeHtml(news.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
@@ -1155,24 +1180,27 @@
                     </div>
                   </div>
                 </article>
-              `).join("")}
+              `).join("") : `
+                <div class="bg-white rounded-2xl p-8 text-center border border-slate-200 text-sm text-slate-500">
+                  কোনো সর্বশেষ সংবাদ পাওয়া যায়নি।
+                </div>
+              `}
             </div>
           </div>
 
           <aside class="lg:col-span-4 space-y-6">
             ${appState.settings.homepage.showNamazWidget ? `<div id="kolkata-namaz-widget"></div>` : ""}
             <div>${renderAdSlot("sidebar")}</div>
-            <!-- E-PAPER Sidebar Card: Only # Link -->
             <div class="bg-gradient-to-br from-navyDark to-emeraldDeep text-white rounded-2xl p-5 shadow-md border border-amber-500/40">
               <div class="flex items-center justify-between mb-3">
                 <span class="font-inter text-xs font-bold uppercase tracking-wider bg-amber-500 text-navyDark px-2.5 py-0.5 rounded">E-PAPER</span>
                 <i class="fa-regular fa-newspaper text-2xl text-amber-400"></i>
               </div>
               <h3 class="text-xl font-bold">বঙ্গনূর ই-পেপার</h3>
-              <p class="text-xs text-slate-300 mt-1">প্রতিদিনের ছাপা পত্রিকা অনলাইনে পড়ুন</p>
+              <p class="text-xs text-slate-300 mt-1">প্রতিদিনের ছাপা পত্রিকা অনলাইনে পড়ুন</p>
               <div class="mt-4">
                 <a href="https://sadikul2007.github.io/SHM-Space-Ecosystem-Whatsapp/e-paper/index.html" class="block w-full text-center bg-white text-emeraldDeep hover:bg-amber-50 font-bold text-xs py-2.5 rounded-xl transition">
-                  ই-পেপার পড়ুন →
+                  ই-পেপার পড়ুন →
                 </a>
               </div>
             </div>
@@ -1229,6 +1257,10 @@
     }
 
     function renderCategoryView(categoryName) {
+      if (appState.isLoading) {
+        return renderLoadingSkeleton();
+      }
+
       const published = getPublishedArticles();
       const items = categoryName === "সব" ? published : published.filter(a => a.category === categoryName);
 
@@ -1276,6 +1308,10 @@
     }
 
     function renderArticleView(articleId) {
+      if (appState.isLoading) {
+        return renderLoadingSkeleton();
+      }
+
       const article = appState.articles.find(a => a.id === articleId) || getPublishedArticles()[0];
       if (!article) return renderHomeView();
       document.title = (article.title || "সংবাদ") + " | বঙ্গনূর (BANGANUR)";
@@ -1359,6 +1395,7 @@
 
             <div class="my-8 no-print">${renderAdSlot("article")}</div>
 
+            ${related.length ? `
             <div class="mt-8 pt-6 border-t-2 border-slate-200 no-print">
               <h3 class="text-xl font-extrabold text-navyDark mb-4">আরও পড়ুন (Related News)</h3>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1371,6 +1408,7 @@
                 `).join("")}
               </div>
             </div>
+            ` : ""}
           </article>
 
           <aside class="lg:col-span-4 space-y-6 no-print">
@@ -1526,6 +1564,9 @@
 
     function navigateTo(view, param = null) {
       currentRoute = { view, param };
+      if (view !== "article") {
+        document.title = "BANGANUR (বঙ্গনূর) | Bengali Digital News Portal & Live TV";
+      }
       try {
         const url = new URL(window.location.href);
         if (view === "article" && param) {
@@ -1545,7 +1586,7 @@
       if (!container) return;
       if (currentRoute.view === "home") {
         container.innerHTML = renderHomeView();
-        if (appState.settings.homepage.showNamazWidget) {
+        if (!appState.isLoading && appState.settings.homepage.showNamazWidget) {
           fetchKolkataPrayerTimes();
         }
       } else if (currentRoute.view === "category") {
@@ -1556,47 +1597,53 @@
     }
 
     async function loadPortalFromWorker() {
+      appState.isLoading = true;
+      appState.loadError = false;
+      renderBreakingTicker();
+      renderCurrentView();
+
       try {
         const res = await fetch(WORKER_API_URL + "/api/portal");
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data.articles) && data.articles.length) {
-            appState.articles = data.articles;
-          }
-          if (Array.isArray(data.breakingNews) && data.breakingNews.length) {
-            appState.breakingNews = data.breakingNews;
-          }
-          if (data.liveTV) {
-            appState.liveTV = {
-              ...appState.liveTV,
-              ...data.liveTV,
-              active: Boolean(data.liveTV.active)
-            };
-          }
-          if (Array.isArray(data.ads) && data.ads.length) {
-            data.ads.forEach(ad => {
-              if (ad.placement) {
-                appState.ads[ad.placement] = {
-                  ...(appState.ads[ad.placement] || {}),
-                  placement: ad.placement,
-                  title: ad.title || "",
-                  image_url: ad.image_url || "",
-                  link_url: ad.link_url || "",
-                  active: Boolean(ad.active)
-                };
-              }
-            });
-          }
+        if (!res.ok) throw new Error("API HTTP " + res.status);
+        const data = await res.json();
+
+        appState.articles = Array.isArray(data.articles) ? data.articles : [];
+        appState.breakingNews = Array.isArray(data.breakingNews) ? data.breakingNews : [];
+
+        if (data.liveTV) {
+          appState.liveTV = {
+            ...appState.liveTV,
+            ...data.liveTV,
+            active: Boolean(data.liveTV.active)
+          };
+        }
+
+        if (Array.isArray(data.ads) && data.ads.length) {
+          data.ads.forEach(ad => {
+            if (ad.placement) {
+              appState.ads[ad.placement] = {
+                ...(appState.ads[ad.placement] || {}),
+                placement: ad.placement,
+                title: ad.title || "",
+                image_url: ad.image_url || "",
+                link_url: ad.link_url || "",
+                active: Boolean(ad.active)
+              };
+            }
+          });
         }
       } catch (e) {
-        console.warn("Worker API fallback in use");
+        console.warn("Failed to load portal data from Cloudflare Worker:", e);
+        appState.loadError = true;
+      } finally {
+        appState.isLoading = false;
+        renderBreakingTicker();
+        refreshStaticAdSlots();
+        renderCurrentView();
       }
-      renderBreakingTicker();
-      refreshStaticAdSlots();
-      renderCurrentView();
     }
 
-    // Safe Global Event Delegation (No inline JS injection risks)
+    // Safe Global Event Delegation
     window.addEventListener("DOMContentLoaded", () => {
       try {
         const initialArticleId = new URLSearchParams(window.location.search).get("article");
@@ -1647,14 +1694,13 @@
           if (act === "scroll-livetv") scrollToLiveTV();
           if (act === "fullscreen-tv") toggleTVFullscreen();
           if (act === "print-article") window.print();
+          if (act === "retry-load") loadPortalFromWorker();
         }
       });
 
       updateHeaderMeta();
       renderNavigation();
-      renderBreakingTicker();
       refreshStaticAdSlots();
-      renderCurrentView();
       loadPortalFromWorker();
     });
   </script>
