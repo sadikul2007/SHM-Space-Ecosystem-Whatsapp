@@ -388,6 +388,15 @@
     const WORKER_API_URL = "https://banganur-api.sadikul2007.workers.dev";
 
     // XSS Protection: Escape plain text before rendering
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
     // Safe Rich-Text Renderer for Articles (Allows ONLY Bold, Italic, Color, Links, Line Breaks & Justify Align)
     function renderSafeArticleContent(rawContent) {
       const content = String(rawContent || "").trim();
