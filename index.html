@@ -72,6 +72,15 @@
     .article-rich-content em {
       font-style: italic;
     }
+    .article-rich-content a {
+      color: #047857;
+      text-decoration: underline;
+      font-weight: 600;
+      word-break: break-word;
+    }
+    .article-rich-content a:hover {
+      color: #D97706;
+    }
 
     @keyframes tickerScroll {
       0% { transform: translateX(0%); }
@@ -379,22 +388,13 @@
     const WORKER_API_URL = "https://banganur-api.sadikul2007.workers.dev";
 
     // XSS Protection: Escape plain text before rendering
-    function escapeHtml(str) {
-      return String(str || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
-
-    // Safe Rich-Text Renderer for Articles (Allows ONLY Bold, Italic, Color, Line Breaks & Justify Align)
+    // Safe Rich-Text Renderer for Articles (Allows ONLY Bold, Italic, Color, Links, Line Breaks & Justify Align)
     function renderSafeArticleContent(rawContent) {
       const content = String(rawContent || "").trim();
       if (!content) return "";
 
       // Check if content contains HTML formatting tags from the Admin Editor
-      const hasHtmlTags = /<(div|p|br|b|strong|i|em|span|font)\b/i.test(content);
+      const hasHtmlTags = /<(div|p|br|b|strong|i|em|span|font|a)\b/i.test(content);
 
       // Legacy plain-text articles: split into justified paragraphs
       if (!hasHtmlTags) {
@@ -420,6 +420,15 @@
         }
         if (["p", "div"].includes(tag)) {
           return isClosing ? `</${tag}>` : `<${tag} style="text-align: justify;">`;
+        }
+        if (tag === "a") {
+          if (isClosing) return "</a>";
+          const hrefMatch = attrs.match(/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+          const rawHref = hrefMatch ? (hrefMatch[1] || hrefMatch[2] || hrefMatch[3] || "") : "";
+          const safeHref = sanitizeUrl(rawHref);
+          return safeHref
+            ? `<a href="${escapeHtml(safeHref)}" target="_blank" rel="noopener noreferrer">`
+            : "";
         }
         if (tag === "span" || tag === "font") {
           if (isClosing) return "</span>";
